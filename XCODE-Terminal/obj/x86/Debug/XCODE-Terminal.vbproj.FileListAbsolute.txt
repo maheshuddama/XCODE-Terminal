@@ -1,0 +1,9 @@
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\bin\Debug\XCODE-Terminal.exe
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\bin\Debug\XCODE-Terminal.pdb
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\bin\Debug\XCODE-Terminal.xml
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XCODE-Terminal.vbproj.ResolveComReference.cache
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XCODE_Terminal.Resources.resources
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XCODE-Terminal.vbproj.GenerateResource.Cache
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XCODE-Terminal.exe
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XCODE-Terminal.xml
+C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XCODE-Terminal.pdb
