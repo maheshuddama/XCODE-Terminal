@@ -1,0 +1,13 @@
+﻿XC did not compile due to critical error(s)
+
+Project		: RCU mem map.Serene-V2-wrong.xlsx
+Start time	: 2:38:31 PM - Jul 19, 2023
+End time	: 2:38:33 PM - Jul 19, 2023
+Compiler	: XC-Terminal version 0.9.1
+User		: Mahesh Uddama
+
+
+====================[Error Log]====================
+
+One or more sheets does not exist in the Mem map. A valid Mem map should be having at least one set of sheets of 'Device','XCODE','Program','Settings','CustomVar' or their integer elevated name such as 'Device1' etc. Carefully check in the Mem map if these sheet names having an extra space charactor before or end to the name.
+

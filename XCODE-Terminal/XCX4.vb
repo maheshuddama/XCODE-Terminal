@@ -12,9 +12,9 @@ Public Class XCX4
     Dim X0 As XCX0
     Dim X5 As New XCX5
 
-    Sub XCODE_Finalize(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String())
+    Sub XCODE_Finalize(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean)
         xlWorkFunc = thisxlWorkFunc
-        X0 = New XCX0(thisxlWorkFunc)
+        X0 = New XCX0(thisxlWorkFunc, unAttended)
 
         Check_ProgBase(thisWorkBook, thisRCUList)
         Set_Version(thisUser, MemmapName, thisWorkBook, thisRCUList)
@@ -32,6 +32,8 @@ Public Class XCX4
         Dim i As Integer, ProgBaseVal As String
 
         i = 0 : ProgBaseVal = "128"
+
+        X0.ConsoleMsg("XC Progress:> Checking Setting.......")
 
         For Each thisRCU In thisRCUList
 
@@ -93,7 +95,7 @@ Public Class XCX4
 
         open_XLog(thisWorkbook, firstRCU)
 
-        XLogComment = "- Compiled using XC Ver-" & X0.getXCVer & "." & X0.getXCbuildVer 'fixed unattended comment
+        XLogComment = "- Compiled using XC Terminal Ver-" & X0.getXCVer & "." & X0.getXCbuildVer 'fixed unattended comment
 
         If (XLogComment = "test" Or XLogComment = "beta") And buildVersion > -1 Then 'can't skip first built
             X0.ConsoleMsg("XC Progress:> Versioning > Version " & buildVersion)

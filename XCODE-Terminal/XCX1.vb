@@ -5,29 +5,32 @@ Public Class XCX1
     Dim xlWorkBook As Excel.Workbook
     Dim xlWorkFunc As Excel.WorksheetFunction
     Dim xlPath As String
-    Dim startTime As String, thisUserName As String
+    Dim startTime As String, thisUserName As String, eMsg As String
     Dim thisRCUList As List(Of String)
 
-    Dim X0 As New XCX0
+    Dim X0 As XCX0
     Dim X2 As New XCX2
     Dim X3 As New XCX3
     Dim X4 As New XCX4
 
-    Sub XCM(ByVal MemmapName As String, ByRef ErrorWarnLog As String())
+    Sub XCM(ByVal MemmapName As String, ByRef ErrorWarnLog As String(), Optional ByVal unAttended As Boolean = False)
+        X0 = New XCX0(unAttended)
         startTime = X0.getTimeStamp
+        eMsg = ""
+
         If CreateWorkbook(MemmapName, ErrorWarnLog) Then
-            X2.XCODE_Core1_Core2(MemmapName, xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog)
-            X3.XCODE_Core3(xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog)
-            X4.XCODE_Finalize(thisUserName, MemmapName, xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog)
+            X2.XCODE_Core1_Core2(MemmapName, xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended)
+            X3.XCODE_Core3(xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended)
+            X4.XCODE_Finalize(thisUserName, MemmapName, xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended)
             UpdateReport(thisUserName, X0.getXCVer & "." & X0.getXCbuildVer, MemmapName)
             CreateSolutions(MemmapName, ErrorWarnLog)
             removeBackups()
             CompleteWorkbook() 'save excel
             CreateErrorWarnReport("XC compiled with error(s)", MemmapName, thisUserName, startTime, ErrorWarnLog, False)
-            DumpResources()
+            DumpResources(unAttended)
         Else
             CreateErrorWarnReport("XC did not compile due to critical error(s)", MemmapName, xlApp.UserName, startTime, ErrorWarnLog, True)
-            DumpResources()
+            DumpResources(unAttended)
         End If
         Console.WriteLine() 'finally move to a new line
     End Sub
@@ -37,7 +40,7 @@ Public Class XCX1
 
         xlPath = My.Computer.FileSystem.CurrentDirectory
 
-        Console.Write("XC Progress:> Reading Memmap...")
+        Console.Write("XC Progress:> Engaging Memmap file '" & MemmapName & "'...")
 
         xlApp = New Microsoft.Office.Interop.Excel.Application()
 
@@ -100,6 +103,12 @@ Public Class XCX1
                 X0.ConsoleMsg("XC:> Error File '" & errFile & "'") 'overwrite
             Else
                 X0.ConsoleMsg("XC:> Error File '" & errFile & "'", False) 'newline
+            End If
+
+            If eMsg = "[Result]" Then
+                eMsg = "[Error,Result]"
+            Else
+                eMsg = "[Error]"
             End If
 
             releaseObject(fileh)
@@ -227,7 +236,7 @@ Public Class XCX1
         xlApp.DisplayAlerts = True
     End Sub
 
-    Private Sub DumpResources()
+    Private Sub DumpResources(Optional ByVal unAttended As Boolean = False)
         'release all objects in an error.
         Try
             If Not IsNothing(xlWorkBook) Then
@@ -253,6 +262,12 @@ Public Class XCX1
             releaseObject(xlApp)
 
         End Try
+
+        If unAttended AndAlso Strings.Len(eMsg) > 0 Then
+            Console.WriteLine()
+            Console.Write("XC:>" & eMsg)
+            'MsgBox(eMsg)
+        End If
     End Sub
 
     Private Sub CreateSolutions(ByVal MemmapName As String, ByRef ErrorWarnLog As String())
@@ -282,8 +297,10 @@ Public Class XCX1
                 X0.ConsoleProgress("Printer > Collecting pages - " & MemmapName, (rcount * 100 / rfullcount))
             Next
             X0.ConsoleMsg("XC:> Solution Files " & Notification)
+            eMsg = "[Result]"
         Else
             ErrorWarnLog(1) = X0.addErrorOrWarn(ErrorWarnLog(1), "[XCODE | Printer | " & xlPath & "][Destination path could not access]")
+            eMsg = "[Error]"
         End If
     End Sub
 

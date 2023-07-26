@@ -6,7 +6,7 @@ Public Class XCX3
 
     Dim X0 As XCX0
 
-    Sub XCODE_Core3(ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String())
+    Sub XCODE_Core3(ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean)
 
         'initiate if there are more than 1 rcu in the memmap
         If thisRCUList.Count > 1 Then
@@ -14,10 +14,11 @@ Public Class XCX3
             Dim RCUname As String, pcount As Integer, pfullcount As Integer
             Dim ce3 As Excel.Range, ThisTempLine As String
 
-            X0 = New XCX0(thisxlWorkFunc)
+            X0 = New XCX0(thisxlWorkFunc, unAttended)
 
             For Each thisRCU As String In thisRCUList
 
+                X0.ConsoleMsg("XC Progress:> XCODE > Core - 3 > Mapping.......")
                 xlProgramSheet = thisWorkBook.Sheets("Program" & thisRCU)
                 RCUname = "RCU" & thisRCU & " > "
                 pcount = 0

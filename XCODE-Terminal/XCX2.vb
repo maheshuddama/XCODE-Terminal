@@ -14,10 +14,10 @@ Public Class XCX2
 
     Dim X0 As XCX0
 
-    Sub XCODE_Core1_Core2(ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String())
+    Sub XCODE_Core1_Core2(ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean)
 
         xlWorkFunc = thisxlWorkFunc
-        X0 = New XCX0(thisxlWorkFunc)
+        X0 = New XCX0(thisxlWorkFunc, unAttended)
 
         For Each thisRCU As String In thisRCUList
 
@@ -26,6 +26,8 @@ Public Class XCX2
             Else
                 RCUname = "RCU" & thisRCU & " > "
             End If
+
+            X0.ConsoleMsg("XC Progress:> XCODE > Core - 1 > Compiling.......")
 
             xlDeviceSheet = thisWorkBook.Sheets("Device" & thisRCU)
             xlXCODESheet = thisWorkBook.Sheets("XCODE" & thisRCU)
@@ -188,7 +190,7 @@ Public Class XCX2
             lineNum = 1 : pcount = 0
             X0.ConsoleProgress(RCUname & "XCODE > Core -1 > Compiling", 50)
             pfullcount = xlProgramSheet.Range(xlProgramSheet.Range("F4"), xlProgramSheet.Range("F4").End(Excel.XlDirection.xlDown)).Count
-
+            X0.ConsoleMsg("XC Progress:> XCODE > Core - 2 > Compiling.......")
 
             For Each ce2 In xlProgramSheet.Range(xlProgramSheet.Range("F4"), xlProgramSheet.Range("F4").End(Excel.XlDirection.xlDown))
 

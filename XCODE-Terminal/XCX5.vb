@@ -2,7 +2,6 @@
 
 Public Class XCX5
 
-
     Function set_C_Scheme_2(ByVal thisConfigLine As String) As Integer
         Dim XCODEConfig As String, XConfigArr() As String
         set_C_Scheme_2 = 0

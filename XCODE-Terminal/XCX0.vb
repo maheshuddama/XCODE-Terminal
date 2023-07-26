@@ -4,38 +4,48 @@ Imports System.Text.RegularExpressions
 
 Public Class XCX0
     Dim xlWorkFunc As Excel.WorksheetFunction
-
+    Dim unAttended As Boolean
     'constructors
 
-    Public Sub New()
-
+    Public Sub New(Optional ByVal thisAttended As Boolean = False)
+        unAttended = thisAttended
     End Sub
 
-    Public Sub New(ByRef ThisWorkFunc As Excel.WorksheetFunction)
+    Public Sub New(ByRef ThisWorkFunc As Excel.WorksheetFunction, Optional ByVal thisAttended As Boolean = False)
         xlWorkFunc = ThisWorkFunc
+        unAttended = thisAttended
     End Sub
 
     ' XC terminal elements
 
     Sub XC_Terminal_Header()
-        Dim logo As String = "" & vbNewLine & _
+        If unAttended Then
+            Console.WriteLine("XC-Terminal Ver(" & getXCVer() & "." & getXCbuildVer() & ")" & vbNewLine)
+        Else
+            Dim logo As String = "" & vbNewLine & _
          "    ██╗  ██╗ ██████╗" & vbNewLine & _
          "    ╚██╗██╔╝██╔════╝" & vbNewLine & _
          "     ╚███╔╝ ██║     " & vbNewLine & _
          "     ██╔██╗ ██║     " & vbNewLine & _
          "    ██╔╝ ██╗╚██████╗" & vbNewLine & _
          "    ╚═╝  ╚═╝ ╚═════╝"
-        Console.WriteLine(logo & vbNewLine & "     XC-Terminal Ver(" & getXCVer() & "." & getXCbuildVer() & ")" & vbNewLine)
+            Console.WriteLine(logo & vbNewLine & "     XC-Terminal Ver(" & getXCVer() & "." & getXCbuildVer() & ")" & vbNewLine)
+        End If
     End Sub
 
     Sub ConsoleProgress(ByVal StageDiscription As String, ByVal StageProgress As Double)
         Dim progressBarWidth As Integer = 20
-        ConsoleEraseThisLine()
-        Console.Write("XC Progress:> " & StageDiscription & "> [{0}{1}]{2}%", New String("█"c, StageProgress * progressBarWidth / 100), New String(" "c, progressBarWidth - (StageProgress * progressBarWidth / 100)), CInt(StageProgress))
+        If unAttended Then
+            'ConsoleEraseThisLine()
+            'Console.Write("XC Progress:> " & StageDiscription & "> [{0}{1}]{2}%", New String("#"c, StageProgress * progressBarWidth / 100), New String(" "c, progressBarWidth - (StageProgress * progressBarWidth / 100)), CInt(StageProgress))
+        Else
+            ConsoleEraseThisLine()
+            Console.Write("XC Progress:> " & StageDiscription & "> [{0}{1}]{2}%", New String("█"c, StageProgress * progressBarWidth / 100), New String(" "c, progressBarWidth - (StageProgress * progressBarWidth / 100)), CInt(StageProgress))
+        End If
     End Sub
 
     Sub ConsoleMsg(ByVal thisMessage As String, Optional ByVal Overwrite As Boolean = True)
-        If Overwrite Then
+        If (Not unAttended) AndAlso Overwrite Then
             ConsoleEraseThisLine()
             Console.Write(thisMessage)
         Else
@@ -444,7 +454,7 @@ Public Class XCX0
     End Function
 
     Function getXCbuildVer() As String
-        getXCbuildVer = "0" ' build version 
+        getXCbuildVer = "4" ' build version 
     End Function
 
     'utc functions
