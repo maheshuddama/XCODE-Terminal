@@ -6,7 +6,7 @@ Public Class XCX5
         Dim XCODEConfig As String, XConfigArr() As String
         set_C_Scheme_2 = 0
         XCODEConfig = Strings.LCase(Strings.Trim(thisConfigLine))
-        If Strings.InStr(XCODEConfig, "]") > 0 And Strings.InStr(XCODEConfig, "[") > 0 Then
+        If Strings.InStr(XCODEConfig, "]") > 0 AndAlso Strings.InStr(XCODEConfig, "[") > 0 Then
             XCODEConfig = Strings.Mid(XCODEConfig, Strings.InStr(XCODEConfig, "[") + 1, Strings.InStr(XCODEConfig, "]") - Strings.InStr(XCODEConfig, "[") - 1)
             XConfigArr = Strings.Split(XCODEConfig, ",")
             If UBound(XConfigArr) > 0 Then

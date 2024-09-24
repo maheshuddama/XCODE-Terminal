@@ -1,0 +1,18 @@
+﻿optimization points
+XCX0
+	GrabPara_BitPOS_OR
+	GrabPara_BitPOS_AND
+	hasValidVar
+	Grab_Var_1
+
+XCX2
+	hasValidC_Var
+	C_VarListNotEmpty
+	Grab_Var_2
+	Populate_C_Var_Dictionary
+
+
+
+	xc 5.5.2
+
+	enable ioexp 7 and above until 15 devices.

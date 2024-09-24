@@ -6,7 +6,10 @@ Public Class XCX1
     Dim xlWorkFunc As Excel.WorksheetFunction
     Dim xlPath As String
     Dim startTime As String, thisUserName As String, eMsg As String
+    Dim xlSheetList As New List(Of String)
     Dim thisRCUList As List(Of String)
+    Dim RCUNameDictionary As New Dictionary(Of String, String)
+    Dim IPDictionary As New Dictionary(Of String, String)
 
     Dim X0 As XCX0
     Dim X2 As New XCX2
@@ -19,9 +22,19 @@ Public Class XCX1
         eMsg = ""
 
         If CreateWorkbook(MemmapName, ErrorWarnLog) Then
-            X2.XCODE_Core1_Core2(MemmapName, xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended)
-            X3.XCODE_Core3(xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended)
-            X4.XCODE_Finalize(thisUserName, MemmapName, xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended)
+            xlApp.ScreenUpdating = False
+            xlApp.Calculation = Excel.XlCalculation.xlCalculationManual
+
+            X2.XCODE_Core1_Core2(MemmapName, xlWorkBook, xlWorkFunc, xlSheetList, thisRCUList, ErrorWarnLog, unAttended, RCUNameDictionary, IPDictionary)
+            xlApp.Calculate()
+
+            X3.XCODE_Core3(xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended, IPDictionary)
+            xlApp.Calculate()
+
+            X4.XCODE_Finalize(thisUserName, MemmapName, xlWorkBook, xlWorkFunc, xlSheetList, thisRCUList, ErrorWarnLog, unAttended)
+            xlApp.ScreenUpdating = True
+            xlApp.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+
             UpdateReport(thisUserName, X0.getXCVer & "." & X0.getXCbuildVer, MemmapName)
             CreateSolutions(MemmapName, ErrorWarnLog)
             removeBackups()
@@ -55,11 +68,12 @@ Public Class XCX1
         xlWorkFunc = xlApp.WorksheetFunction
         thisUserName = xlApp.UserName
 
-        thisRCUList = X0.getRCUList(xlWorkBook)
+        Populate_Sheet_List()
+        thisRCUList = X0.getRCUList(xlSheetList)
 
         If thisRCUList(0) <> "NULL" Then
 
-            If X0.NoVariableErrors(xlWorkBook, thisRCUList, ErrorWarnLog) Then
+            If X0.NoVariableErrors(xlWorkBook, xlSheetList, thisRCUList, ErrorWarnLog) Then
                 CreateWorkbook = CheckCompatibility(xlWorkBook, ErrorWarnLog)
             Else
                 'there was some errors, its included in the error report
@@ -68,6 +82,12 @@ Public Class XCX1
             ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "One or more sheets does not exist in the Mem map. A valid Mem map should be having at least one set of sheets of 'Device','XCODE','Program','Settings','CustomVar' or their integer elevated name such as 'Device1' etc. Carefully check in the Mem map if these sheet names having an extra space charactor before or end to the name.")
         End If
     End Function
+
+    Private Sub Populate_Sheet_List()
+        For Each xlSheet As Excel.Worksheet In xlWorkBook.Sheets
+            xlSheetList.Add(xlSheet.Name)
+        Next
+    End Sub
 
     Private Sub CreateErrorWarnReport(ByVal header As String, ByVal MemmapName As String, ByVal thisUser As String, ByVal thisStartTime As String, ByRef ErrorWarnLog As String(), Optional ByVal Critical As Boolean = False)
 
@@ -127,8 +147,15 @@ Public Class XCX1
         MemmapName = X0.URLEncode(MemmapName)
         thisPath = X0.URLEncode(xlPath)
 
-        xlWorkBook.Sheets.Add(Before:=xlWorkBook.Sheets("XLog")).name = "ReportXlog"
-        xlWorkSheet = xlWorkBook.Sheets("ReportXlog")
+        If X0.isSheetExist_From_List(xlSheetList, "ReportXlog") Then
+            xlWorkSheet = xlWorkBook.Sheets("ReportXlog")
+            xlWorkSheet.Range("A:Z").ClearContents()
+        Else
+            xlWorkBook.Sheets.Add(Before:=xlWorkBook.Sheets("XLog")).name = "ReportXlog"
+            xlWorkSheet = xlWorkBook.Sheets("ReportXlog")
+            xlSheetList.Add("ReportXlog")
+        End If
+        
 
         XLogQuery = X0.getLogAuth
         XLogQuery = XLogQuery & "?entry.84145384=" & thisUser & "&entry.1362894441=" & thisVer & "&entry.1003842767=" & MemmapName & "&entry.696172307=" & thisPath & "&fvv=1&partialResponse=%5Bnull%2Cnull%2C%228790538719799163109%22%5D&pageHistory=0&fbzx=8790538719799163109"
@@ -149,6 +176,7 @@ Public Class XCX1
             xlWorkSheet.Range("A:Z").ClearContents()
             xlApp.DisplayAlerts = False
             xlWorkBook.Sheets("ReportXlog").delete()
+            xlSheetList.Remove("ReportXlog")
             releaseObject(xlWorkSheet) 'locally released 
             xlApp.DisplayAlerts = True
         End Try
@@ -161,11 +189,12 @@ Public Class XCX1
 
         X0.ConsoleMsg("XC Progress:> Initiate Compiling...")
 
-        If X0.isSheetExist(thisWorkbook, "Compatible") Then
+        If X0.isSheetExist_From_List(xlSheetList, "Compatible") Then
             xlWorkSheet = xlWorkBook.Sheets("Compatible")
             xlWorkSheet.Range("A:Z").ClearContents()
         Else
             xlWorkBook.Sheets.Add(Before:=xlWorkBook.Sheets("Device" & thisRCUList(0))).name = "Compatible" 'add compatibility sheet at the begining
+            xlSheetList.Add("Compatible")
             xlWorkSheet = xlWorkBook.Sheets("Compatible")
         End If
 
@@ -213,6 +242,7 @@ Public Class XCX1
             xlWorkSheet.Range("A:Z").ClearContents()
             xlApp.DisplayAlerts = False
             xlWorkBook.Sheets("Compatible").delete()
+            xlSheetList.Remove("Compatible")
             releaseObject(xlWorkSheet)
             xlApp.DisplayAlerts = True
         End Try
@@ -335,29 +365,34 @@ Public Class XCX1
     'solution write
 
     Private Function getDefinedName(ByVal thisRCU As String) As String
-        Dim xlWorkSheet As Excel.Worksheet
-        Dim ce As Excel.Range, ThisTempLine As String
-        getDefinedName = "NULL"
+        'Dim xlWorkSheet As Excel.Worksheet
+        'Dim ce As Excel.Range, ThisTempLine As String
+        'getDefinedName = "NULL"
 
-        xlWorkSheet = xlWorkBook.Sheets("XCODE" & thisRCU)
+        'xlWorkSheet = xlWorkBook.Sheets("XCODE" & thisRCU)
 
-        For Each ce In xlWorkSheet.Range(xlWorkSheet.Range("B2"), xlWorkSheet.Range("B2").End(Excel.XlDirection.xlDown))
+        'For Each ce In xlWorkSheet.Range(xlWorkSheet.Range("B2"), xlWorkSheet.Range("B2").End(Excel.XlDirection.xlDown))
 
-            ThisTempLine = Strings.LCase(Strings.Trim(ce.Offset(0, 1).Text))
+        '    ThisTempLine = Strings.LCase(Strings.Trim(ce.Offset(0, 1).Text))
 
-            If Strings.InStr(ThisTempLine, "//") > 2 And Not Strings.Left(ThisTempLine, 2) = "0x" Then 'comment detection and filter except direct hex
-                ThisTempLine = Strings.Trim(Strings.Left(ThisTempLine, Strings.InStr(ThisTempLine, "//") - 1))
-            End If
+        '    If Strings.InStr(ThisTempLine, "//") > 2 AndAlso Not Strings.Left(ThisTempLine, 2) = "0x" Then 'comment detection and filter except direct hex
+        '        ThisTempLine = Strings.Trim(Strings.Left(ThisTempLine, Strings.InStr(ThisTempLine, "//") - 1))
+        '    End If
 
-            If Strings.InStr(ThisTempLine, "define rcu ") = 1 Then
-                getDefinedName = X0.Grab_name(ThisTempLine)
-                releaseObject(xlWorkSheet)
-                Exit Function
-            End If
+        '    If Strings.InStr(ThisTempLine, "define rcu ") = 1 Then
+        '        getDefinedName = X0.Grab_name(ThisTempLine)
+        '        releaseObject(xlWorkSheet)
+        '        Exit Function
+        '    End If
 
-        Next ce
+        'Next ce
 
-        releaseObject(xlWorkSheet)
+        'releaseObject(xlWorkSheet)
+        If RCUNameDictionary.ContainsKey("XCODE" & thisRCU) Then
+            getDefinedName = RCUNameDictionary("XCODE" & thisRCU)
+        Else
+            getDefinedName = "NULL"
+        End If
     End Function
 
     Private Function DeviceXF(ByVal MemmapName As String, ByVal thisRCU As String, ByVal Def_Name As String) As String
@@ -389,7 +424,7 @@ Public Class XCX1
                 If ce.Text <> "" Then
                     .WriteLine(ce.Text & vbTab & ce.Offset(0, 1).Text & vbTab & ce.Offset(0, 2).Text & vbTab & ce.Offset(0, 3).Text & vbTab & ce.Offset(0, 4).Text & vbTab & ce.Offset(0, 5).Text)
 
-                    If Strings.LCase(Strings.Trim(ce.Offset(0, 1).Text)) = "0e" And (Not withCBS) Then
+                    If Strings.LCase(Strings.Trim(ce.Offset(0, 1).Text)) = "0e" AndAlso (Not withCBS) Then
                         withCBS = True
                         CBSline = Strings.Replace(Strings.Trim(ce.Offset(0, 4).Text), " ", "")
                         CBSline = Strings.Right(CBSline, 2) & Strings.Left(CBSline, 2)

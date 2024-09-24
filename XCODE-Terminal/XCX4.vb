@@ -12,12 +12,13 @@ Public Class XCX4
     Dim X0 As XCX0
     Dim X5 As New XCX5
 
-    Sub XCODE_Finalize(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean)
+    Sub XCODE_Finalize(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction,
+                       ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean)
         xlWorkFunc = thisxlWorkFunc
         X0 = New XCX0(thisxlWorkFunc, unAttended)
 
         Check_ProgBase(thisWorkBook, thisRCUList)
-        Set_Version(thisUser, MemmapName, thisWorkBook, thisRCUList)
+        Set_Version(thisUser, MemmapName, thisWorkBook, xlSheetList, thisRCUList)
 
         releaseObject(xlXLogSheet)
         releaseObject(xlXCODESheet)
@@ -69,8 +70,10 @@ Public Class XCX4
             xlSettingsSheet = thisWorkbook.Sheets("Settings" & thisRCU)
 
             If xlSettingsSheet.Range("C26").Text <> ProgBaseVal Then 'optimization write only if its different.
-                xlSettingsSheet.Range("B26").FormulaR1C1 = "=DEC2HEX(RC[1],2)&"";"""
-                xlSettingsSheet.Range("C26").FormulaR1C1 = ProgBaseVal
+                'xlSettingsSheet.Range("B26").FormulaR1C1 = "=DEC2HEX(RC[1],2)&"";"""
+                'xlSettingsSheet.Range("C26").FormulaR1C1 = ProgBaseVal
+
+                xlSettingsSheet.Range("B26").Resize(1, 2).Value = New Object(,) {{"=DEC2HEX(RC[1],2)&"";""", ProgBaseVal}}
             End If
 
             i = i + 1
@@ -80,7 +83,7 @@ Public Class XCX4
     End Sub
 
     'advancing the version for XCODE terminal this is unattended version update no user inputs
-    Private Sub Set_Version(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkbook As Excel.Workbook, ByRef thisRCUList As List(Of String))
+    Private Sub Set_Version(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkbook As Excel.Workbook, ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String))
         '00 00 00 00 hex(XCODE version) 2Byte[bin7(year) bin4(month) bin5(day)] hex(build version)
         Dim buildVersion As Integer, tempVLine As String, vData() As String
         Dim firstRCU As String, XLogComment As String
@@ -93,18 +96,18 @@ Public Class XCX4
         vData = Strings.Split(Strings.Mid(tempVLine, Strings.InStr(tempVLine, "[") + 1, Strings.InStr(tempVLine, "]") - Strings.InStr(tempVLine, "[") - 1), ",")
         buildVersion = CInt(vData(1))
 
-        open_XLog(thisWorkbook, firstRCU)
+        open_XLog(thisWorkbook, xlSheetList, firstRCU)
 
         XLogComment = "- Compiled using XC Terminal Ver-" & X0.getXCVer & "." & X0.getXCbuildVer 'fixed unattended comment
 
-        If (XLogComment = "test" Or XLogComment = "beta") And buildVersion > -1 Then 'can't skip first built
+        If (XLogComment = "test" Or XLogComment = "beta") AndAlso buildVersion > -1 Then 'can't skip first built
             X0.ConsoleMsg("XC Progress:> Versioning > Version " & buildVersion)
             increment_version(MemmapName, (buildVersion - 1), thisWorkbook, thisRCUList)
         Else
-            If Len(XLogComment) < 4 And buildVersion < 0 Then
+            If Len(XLogComment) < 4 AndAlso buildVersion < 0 Then
                 'first built without comment
                 XLogComment = "- Initial built"
-            ElseIf Len(XLogComment) < 4 And buildVersion > -1 Then
+            ElseIf Len(XLogComment) < 4 AndAlso buildVersion > -1 Then
                 XLogComment = "- Compiled without logging changes"
             End If
 
@@ -120,9 +123,10 @@ Public Class XCX4
 
     End Sub
 
-    Private Sub open_XLog(ByRef thisWorkbook As Excel.Workbook, ByVal firstRCU As String)
-        If Not X0.isSheetExist(thisWorkbook, "XLog") Then
+    Private Sub open_XLog(ByRef thisWorkbook As Excel.Workbook, ByRef xlSheetList As List(Of String), ByVal firstRCU As String)
+        If Not X0.isSheetExist_From_List(xlSheetList, "XLog") Then
             thisWorkbook.Sheets.Add(Before:=thisWorkbook.Sheets("Device" & firstRCU)).Name = "XLog"
+            xlSheetList.Add("XLog")
             populate_XLog(thisWorkbook)
         Else
             thisWorkbook.Sheets("XLog").Unprotect("1234XCODE5")
@@ -132,11 +136,13 @@ Public Class XCX4
     Private Sub populate_XLog(ByRef thisWorkbook As Excel.Workbook)
         xlXLogSheet = thisWorkbook.Sheets("XLog")
 
-        xlXLogSheet.Range("B2").FormulaR1C1 = "File"
-        xlXLogSheet.Range("B2").Offset(0, 1).FormulaR1C1 = "Version"
-        xlXLogSheet.Range("B2").Offset(0, 2).FormulaR1C1 = "User"
-        xlXLogSheet.Range("B2").FormulaR1C1 = "Date"
-        xlXLogSheet.Range("B2").FormulaR1C1 = "Change Log"
+        'xlXLogSheet.Range("B2").FormulaR1C1 = "File"
+        'xlXLogSheet.Range("B2").Offset(0, 1).FormulaR1C1 = "Version"
+        'xlXLogSheet.Range("B2").Offset(0, 2).FormulaR1C1 = "User"
+        'xlXLogSheet.Range("B2").Offset(0, 3).FormulaR1C1 = "Date"
+        'xlXLogSheet.Range("B2").Offset(0, 4).FormulaR1C1 = "Change Log"
+
+        xlXLogSheet.Range("B2").Resize(1, 5).Value = New Object(,) {{"File", "Version", "User", "Date", "Change Log"}}
     End Sub
 
     Private Sub write_XLog(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkbook As Excel.Workbook, ByVal PreVersion As Integer, ByVal thisComment As String)
@@ -162,11 +168,18 @@ Public Class XCX4
             End With
         End If
 
-        xlXLogSheet.Range("B3").FormulaR1C1 = MemmapName
-        xlXLogSheet.Range("B3").Offset(0, 1).FormulaR1C1 = "'" & xlWorkFunc.Dec2Hex(PreVersion + 1, 2)
-        xlXLogSheet.Range("B3").Offset(0, 2).FormulaR1C1 = "'" & thisUser
-        xlXLogSheet.Range("B3").Offset(0, 3).FormulaR1C1 = "'" & Day(DateTime.Now) & "/" & Month(DateTime.Now) & "/" & Year(DateTime.Now)
-        xlXLogSheet.Range("B3").Offset(0, 4).FormulaR1C1 = thisComment
+        'xlXLogSheet.Range("B3").FormulaR1C1 = MemmapName
+        'xlXLogSheet.Range("B3").Offset(0, 1).FormulaR1C1 = "'" & xlWorkFunc.Dec2Hex(PreVersion + 1, 2)
+        'xlXLogSheet.Range("B3").Offset(0, 2).FormulaR1C1 = "'" & thisUser
+        'xlXLogSheet.Range("B3").Offset(0, 3).FormulaR1C1 = "'" & Day(DateTime.Now) & "/" & Month(DateTime.Now) & "/" & Year(DateTime.Now)
+        'xlXLogSheet.Range("B3").Offset(0, 4).FormulaR1C1 = thisComment
+
+        xlXLogSheet.Range("B3").Resize(1, 5).Value = New Object(,) {{MemmapName,
+                                                                     "'" & xlWorkFunc.Dec2Hex(PreVersion + 1, 2),
+                                                                     "'" & thisUser,
+                                                                     "'" & Day(DateTime.Now) & "/" & Month(DateTime.Now) & "/" & Year(DateTime.Now),
+                                                                     thisComment}}
+
         xlXLogSheet.Range("B3:F3").Font.Bold = False
         xlXLogSheet.Range("B3:F3").VerticalAlignment = Excel.XlVAlign.xlVAlignTop
     End Sub
@@ -219,7 +232,7 @@ Public Class XCX4
             xlProgramSheet = thisWorkbook.Sheets("Program" & thisRCU)
 
             vLine = 1 : m = 3
-            While (vLine = 1 And m < 100)
+            While (vLine = 1 AndAlso m < 100)
                 If Strings.InStr(Strings.LCase(xlXCODESheet.Range("C" & m).Text), "version ") = 1 Then
                     vLine = m
                 End If
@@ -228,8 +241,9 @@ Public Class XCX4
 
             If vLine > 1 Then
                 xlXCODESheet.Range("C" & vLine).FormulaR1C1 = "version [" & X0.encript(X0.getsufixname(MemmapName)) & "," & (buildVersion + 1) & "]"
-                xlProgramSheet.Range("F4").FormulaR1C1 = xlXCODESheet.Range("C" & vLine).Text
-                xlProgramSheet.Range("E4").FormulaR1C1 = tempVLine
+                'xlProgramSheet.Range("F4").FormulaR1C1 = xlXCODESheet.Range("C" & vLine).Text
+                'xlProgramSheet.Range("E4").FormulaR1C1 = tempVLine
+                xlProgramSheet.Range("E4").Resize(1, 2).Value = New Object(,) {{tempVLine, xlXCODESheet.Range("C" & vLine).Text}}
                 this_Color = X5.set_C_Scheme_2(xlXCODESheet.Range("C1").Text)
                 X5.keyword_version(this_Color, xlXCODESheet.Range("C" & vLine))
             End If

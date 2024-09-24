@@ -1,0 +1,41 @@
+﻿XC compiled with error(s)
+
+Project		: RCU mem map.4br-villa-ver0.xlsx
+Start time	: 12:18:05 AM - Sep 28, 2023
+End time	: 12:21:53 AM - Sep 28, 2023
+Compiler	: XC-Terminal version 5.4.0
+User		: Mahesh Uddama
+
+
+====================[Error Log]====================
+
+[RCU1 | XCODE1 | line 330 | gsw1_btn_9][Duplicate Function]
+[RCU1 | XCODE1 | Program1 | line 250 | reuse #foyer_up][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 258 | reuse #foyer_down][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 262 | reuse #welcome_scene_night][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 291 | reuse #night_mode][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 303 | reuse #living_fan_speed_up][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 306 | reuse #living_low][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 309 | reuse #living_fan_speed_down][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 333 | reuse #night_mode][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 345 | reuse #living_fan_speed_up][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 348 | reuse #living_low][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 351 | reuse #living_fan_speed_down][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 387 | reuse #outdoor_fan_up][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 396 | reuse #outdoor_fan_down][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 417 | reuse #master_down][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 429 | reuse #master_up][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 465 | reuse #outdoor_fan_up][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 474 | reuse #outdoor_fan_down][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 565 | reuse #movies][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 569 | reuse #romantic][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 581 | reuse #night_light][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 643 | reuse #romantic][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 647 | reuse #movies][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 651 | reuse #night_light][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 705 | reuse #bedroom_fan_up][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 708 | reuse #bedroom_low][Invalid function call]
+[RCU1 | XCODE1 | Program1 | line 711 | reuse #bedroom_fan_down][Invalid function call]
+[RCU2 | XCODE2 | Program2 | line 90 | goto #set_last_action][Invalid function call]
+[RCU2 | XCODE2 | Program2 | line 111 | goto #set_last_action][Invalid function call]
+

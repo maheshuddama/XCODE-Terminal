@@ -6,7 +6,8 @@ Public Class XCX3
 
     Dim X0 As XCX0
 
-    Sub XCODE_Core3(ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean)
+    Sub XCODE_Core3(ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String),
+                    ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean, ByRef IPDictionary As Dictionary(Of String, String))
 
         'initiate if there are more than 1 rcu in the memmap
         If thisRCUList.Count > 1 Then
@@ -18,9 +19,10 @@ Public Class XCX3
 
             For Each thisRCU As String In thisRCUList
 
-                X0.ConsoleMsg("XC Progress:> XCODE > Core - 3 > Mapping.......")
-                xlProgramSheet = thisWorkBook.Sheets("Program" & thisRCU)
                 RCUname = "RCU" & thisRCU & " > "
+                X0.ConsoleMsg("XC Progress:> " & RCUname & "XCODE > Core - 3 > Mapping.......")
+                xlProgramSheet = thisWorkBook.Sheets("Program" & thisRCU)
+
                 pcount = 0
                 pfullcount = xlProgramSheet.Range(xlProgramSheet.Range("D4"), xlProgramSheet.Range("D4").End(Excel.XlDirection.xlDown)).Count
 
@@ -33,39 +35,47 @@ Public Class XCX3
 
                         If otherRCU <> "NULL" Then
 
-                            Dim ThisTempLine2 As String, otherRCUIP As String, otherRCUF As String, thisFunction As String, LArrayF() As String
-                            Dim ce4 As Excel.Range, f As Integer
+                            'Dim ThisTempLine2 As String
+                            Dim otherRCUIP As String, otherRCUF As String, thisFunction As String, LArrayF() As String
+                            'Dim ce4 As Excel.Range
+                            Dim f As Integer
                             otherRCUIP = "00 00 00 00" : otherRCUF = "00 00"
 
-                            xlXCODESheet = thisWorkBook.Sheets("XCODE" & thisRCU)
+                            'xlXCODESheet = thisWorkBook.Sheets("XCODE" & thisRCU)
 
-                            For Each ce4 In xlXCODESheet.Range(xlXCODESheet.Range("B2"), xlXCODESheet.Range("B2").End(Excel.XlDirection.xlDown))
-                                ThisTempLine2 = ce4.Offset(0, 1).Text
+                            'For Each ce4 In xlXCODESheet.Range(xlXCODESheet.Range("B2"), xlXCODESheet.Range("B2").End(Excel.XlDirection.xlDown))
+                            '    ThisTempLine2 = ce4.Offset(0, 1).Text
 
-                                If X0.isADefinition(ThisTempLine2) Then
+                            '    If X0.isADefinition(ThisTempLine2) Then
 
-                                    If InStr(ThisTempLine2, "//") > 20 Then 'filter comment with minimum distance
-                                        ThisTempLine2 = Strings.Left(ThisTempLine2, Strings.InStr(ThisTempLine2, "//") - 1)
-                                    End If
+                            '        If InStr(ThisTempLine2, "//") > 20 Then 'filter comment with minimum distance
+                            '            ThisTempLine2 = Strings.Left(ThisTempLine2, Strings.InStr(ThisTempLine2, "//") - 1)
+                            '        End If
 
-                                    If isAnIPdefinition(ThisTempLine2, otherRCU, thisRCU, ErrorWarnLog) Then
-                                        otherRCUIP = X0.Grab_IP_addr(X0.Grab_variant(ThisTempLine2, "ip"))
-                                        Exit For
-                                    End If
-                                End If
-                            Next ce4
+                            '        If isAnIPdefinition(ThisTempLine2, otherRCU, thisRCU, ErrorWarnLog) Then
+                            '            otherRCUIP = X0.Grab_IP_addr(X0.Grab_variant(ThisTempLine2, "ip"))
+                            '            Exit For
+                            '        End If
+                            '    End If
+                            'Next ce4
+
+                            If IPDictionary.ContainsKey("XCODE" & otherRCU) Then
+                                otherRCUIP = X0.Grab_IP_addr(IPDictionary("XCODE" & otherRCU))
+                            End If
+
 
                             LArrayF = Strings.Split(ThisTempLine, " ")
 
                             For f = LBound(LArrayF) To UBound(LArrayF)
                                 If Strings.InStr(LArrayF(f), "#") = 1 Then
                                     thisFunction = Strings.Replace(LArrayF(f), "#", "")
-                                    otherRCUF = X0.getLineFromFunctionName(thisFunction, 3, thisWorkBook, otherRCU) '3 input line for nearest exit
+                                    otherRCUF = X0.getLineFromFunctionNameOtherRCU(thisFunction, 3, thisWorkBook, otherRCU) '3 input line for nearest exit
                                     otherRCUF = Strings.Right(otherRCUF, 2) & " " & Strings.Left(otherRCUF, 2)
+                                    Exit For 'skip checking other elements
                                 End If
                             Next f
 
-                            If otherRCUF <> "00 00" And otherRCUIP <> "00 00 00 00" Then
+                            If otherRCUF <> "00 00" AndAlso otherRCUIP <> "00 00 00 00" Then
                                 ce3.Offset(0, 1).FormulaR1C1 = "30 " & otherRCUF & " 00 " & otherRCUIP & ";"
                             Else
                                 If otherRCUF = "00 00" Then
@@ -112,9 +122,9 @@ Public Class XCX3
         Next k
 
         If IsNumeric(tempS) Then
-            If CInt(tempS) > 0 And CInt(tempS) <= 64 Then
+            If CInt(tempS) > 0 AndAlso CInt(tempS) <= 64 Then
                 If thisRCUList.Contains(tempS) Then
-                    getOtherRCU = tempS
+                    getOtherRCU = CStr(CInt(tempS))
                 End If
             End If
         End If
@@ -137,10 +147,7 @@ Public Class XCX3
     End Function
 
 
-    
-
     'garbage management
-
     Private Sub releaseObject(ByRef thisObject As Object)
         Try
             System.Runtime.InteropServices.Marshal.FinalReleaseComObject(thisObject)

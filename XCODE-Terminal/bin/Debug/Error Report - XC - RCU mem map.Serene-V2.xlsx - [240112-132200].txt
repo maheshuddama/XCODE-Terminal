@@ -1,0 +1,13 @@
+﻿XC compiled with error(s)
+
+Project		: RCU mem map.Serene-V2.xlsx
+Start time	: 1:21:33 PM - Jan 12, 2024
+End time	: 1:22:00 PM - Jan 12, 2024
+Compiler	: XC-Terminal version 5.5.2
+User		: Mahesh Uddama
+
+
+====================[Error Log]====================
+
+[RCU | XCODE | line 0222 | ioexp13.set $relay=12,13][Undefined variable | ioexp13]
+

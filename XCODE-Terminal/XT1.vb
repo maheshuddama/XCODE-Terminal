@@ -9,7 +9,7 @@ Module XT1
     Sub Main(ByVal args As String())
         Dim Input As String
         Dim xlPath = My.Computer.FileSystem.CurrentDirectory
-        unAttended = True : Compiling = False
+        unAttended = False : Compiling = False
         X0 = New XCX0(unAttended)
         Console.Title = "XC-Terminal Ver(" & X0.getXCVer & "." & X0.getXCbuildVer & ") - (For Preview Only)"
 
@@ -30,7 +30,7 @@ Module XT1
         End If
 
 
-        While (Input.ToLower() <> "exit" And Not Compiling)
+        While (Input.ToLower() <> "exit" AndAlso Not Compiling)
 
             If Input.Length = 0 Then
                 Console.Write("XC:>")
@@ -39,7 +39,7 @@ Module XT1
 
             Dim words As String() = Strings.Split(Input, " ")
 
-            If words(0).ToLower = "xc" And Not Compiling Then
+            If words(0).ToLower = "xc" AndAlso Not Compiling Then
                 ErrorWarnLog = {"", ""}
                 Dim X1 As New XCX1
                 Dim MemmapFileName As String
@@ -168,7 +168,7 @@ Module XT1
         getFirstMemmap = ""
         For Each foundfile As String In My.Computer.FileSystem.GetFiles(thisPath)
             thisFileName = Strings.Replace(foundfile, thisPath & "\", "")
-            If (Strings.Right(Strings.LCase(thisFileName), 5) = ".xlsx") And Strings.InStr(Strings.LCase(thisFileName), "rcu mem map.") = 1 Then
+            If (Strings.Right(Strings.LCase(thisFileName), 5) = ".xlsx") AndAlso Strings.InStr(Strings.LCase(thisFileName), "rcu mem map.") = 1 Then
                 getFirstMemmap = thisFileName 'output should not force to lcase
                 Exit Function
             End If
