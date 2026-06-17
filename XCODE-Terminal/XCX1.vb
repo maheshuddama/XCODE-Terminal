@@ -198,6 +198,8 @@ Public Class XCX1
             xlWorkSheet = xlWorkBook.Sheets("Compatible")
         End If
 
+
+
         thisCon = X0.getOpenAuth
 
         Try
@@ -249,6 +251,7 @@ Public Class XCX1
 
     End Function
 
+   
     Private Sub removeBackups()
         Dim xlWorkSheet As Excel.Worksheet = Nothing
         'remove backup

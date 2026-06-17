@@ -1,0 +1,13 @@
+﻿XC did not compile due to critical error(s)
+
+Project		: RCU mem map.template-singlercu.xlsx
+Start time	: 0:22:03 AM - Oct 18, 2024
+End time	: 0:22:04 AM - Oct 18, 2024
+Compiler	: XC-Terminal version 5.6.0
+User		: Mahesh Uddama
+
+
+====================[Error Log]====================
+
+Failed to initiate Memmap.
+

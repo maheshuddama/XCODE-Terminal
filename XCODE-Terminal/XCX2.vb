@@ -393,56 +393,131 @@ Public Class XCX2
     End Sub
 
     ' devices function calibration
+    'Private Sub FunctionCalibrate(ByVal thisRCU As String)
+    '    Dim ce3 As Excel.Range, pcount As Double, pfullcount As Double
+    '    pcount = 0 : pfullcount = 0
+    '    pfullcount = xlDeviceSheet.Range(xlDeviceSheet.Range("J4"), xlDeviceSheet.Range("J4").End(Excel.XlDirection.xlDown)).Count
+
+    '    For Each ce3 In xlDeviceSheet.Range(xlDeviceSheet.Range("J4"), xlDeviceSheet.Range("J4").End(Excel.XlDirection.xlDown))
+    '        If ce3.Offset(0, 4).Text <> "" Then
+    '            Dim thisFunc As String, tempJumpOld As String, tempJump As String
+
+    '            thisFunc = Strings.LCase(Strings.Trim(ce3.Offset(0, 4).Text))
+    '            If Not isNotDuplicateFunction(thisFunc) Then
+    '                tempJumpOld = Strings.Mid(Strings.Trim(Strings.Replace(ce3.Text, ";", "")), 4, 1)
+    '                tempJump = tempJumpOld & Strings.Right(getLineFromFunctionName(thisFunc, 3, thisRCU), 3)
+    '                ce3.FormulaR1C1 = Strings.Right(tempJump, 2) & " " & Strings.Left(tempJump, 2) & ";"
+    '                setFunctionNode(ce3.Row)
+    '            Else
+    '                If ce3.Offset(0, 4).MergeCells Then
+    '                    ce3.Offset(0, 4).MergeArea.Interior.ColorIndex = 0
+    '                    ce3.Offset(0, 4).MergeArea.ClearContents()
+    '                    ce3.Offset(0, 4).MergeArea.UnMerge()
+    '                End If
+
+    '                ce3.Offset(0, 4).Interior.ColorIndex = 0
+    '                ce3.Offset(0, 4).ClearContents()
+
+    '                unsetFunctionNode(ce3.Row)
+    '            End If
+    '        Else
+    '            unsetFunctionNode(ce3.Row)
+    '        End If
+
+    '        pcount = pcount + 1
+
+    '        X0.ConsoleProgress("Formatter > Device" & thisRCU & " inputs Calibration", (pcount * 100 / pfullcount))
+
+    '    Next ce3
+
+    'End Sub
+
     Private Sub FunctionCalibrate(ByVal thisRCU As String)
-        Dim ce3 As Excel.Range, pcount As Double, pfullcount As Double
-        pcount = 0 : pfullcount = 0
-        pfullcount = xlDeviceSheet.Range(xlDeviceSheet.Range("J4"), xlDeviceSheet.Range("J4").End(Excel.XlDirection.xlDown)).Count
+        Dim startCell As Excel.Range
+        Dim dataRange As Excel.Range
+        Dim ce3 As Excel.Range
+        Dim pcount As Double, pfullcount As Double
 
-        For Each ce3 In xlDeviceSheet.Range(xlDeviceSheet.Range("J4"), xlDeviceSheet.Range("J4").End(Excel.XlDirection.xlDown))
-            If ce3.Offset(0, 4).Text <> "" Then
-                Dim thisFunc As String, tempJumpOld As String, tempJump As String
+        pcount = 0
 
-                thisFunc = Strings.LCase(Strings.Trim(ce3.Offset(0, 4).Text))
+        startCell = xlDeviceSheet.Range("J4")
+        dataRange = xlDeviceSheet.Range(startCell, startCell.End(Excel.XlDirection.xlDown))
+        pfullcount = dataRange.Count
+
+        For Each ce3 In dataRange
+            Dim offsetCell As Excel.Range
+            offsetCell = ce3.Offset(0, 4)
+
+            If Trim(offsetCell.Text) <> "" Then
+                Dim thisFunc As String
+                thisFunc = LCase(Trim(offsetCell.Text))
+
                 If Not isNotDuplicateFunction(thisFunc) Then
-                    tempJumpOld = Strings.Mid(Strings.Trim(Strings.Replace(ce3.Text, ";", "")), 4, 1)
-                    tempJump = tempJumpOld & Strings.Right(getLineFromFunctionName(thisFunc, 3, thisRCU), 3)
-                    ce3.FormulaR1C1 = Strings.Right(tempJump, 2) & " " & Strings.Left(tempJump, 2) & ";"
-                    setFunctionNode(ce3.Row)
+                    Dim tempJumpOld As String, tempJump As String
+                    tempJumpOld = Mid(Replace(Trim(ce3.Text), ";", ""), 4, 1)
+                    tempJump = tempJumpOld & Right(getLineFromFunctionName(thisFunc, 3, thisRCU), 3)
+                    ce3.FormulaR1C1 = Right(tempJump, 2) & " " & Left(tempJump, 2) & ";"
+                    setFunctionNode(CStr(ce3.Row))
                 Else
-                    If ce3.Offset(0, 4).MergeCells Then
-                        ce3.Offset(0, 4).MergeArea.Interior.ColorIndex = 0
-                        ce3.Offset(0, 4).MergeArea.ClearContents()
-                        ce3.Offset(0, 4).MergeArea.UnMerge()
+                    If offsetCell.MergeCells Then
+                        With offsetCell.MergeArea
+                            .Interior.ColorIndex = 0
+                            .ClearContents()
+                            .UnMerge()
+                        End With
                     End If
 
-                    ce3.Offset(0, 4).Interior.ColorIndex = 0
-                    ce3.Offset(0, 4).ClearContents()
+                    With offsetCell
+                        .Interior.ColorIndex = 0
+                        .ClearContents()
+                    End With
 
-                    unsetFunctionNode(ce3.Row)
+                    unsetFunctionNode(CStr(ce3.Row))
                 End If
             Else
-                unsetFunctionNode(ce3.Row)
+                unsetFunctionNode(CStr(ce3.Row))
             End If
 
             pcount = pcount + 1
-
-            X0.ConsoleProgress("Formatter > Device" & thisRCU & " inputs Calibration", (pcount * 100 / pfullcount))
-
+            X0.ConsoleProgress("Formatter > Device" & thisRCU & " inputs Calibration", (pcount * 100.0# / pfullcount))
         Next ce3
-
     End Sub
 
+    'Private Sub setFunctionNode(inputRange As String)
+    '    xlDeviceSheet.Range("J" & inputRange).Interior.PatternColorIndex = Excel.XlPattern.xlPatternAutomatic
+    '    xlDeviceSheet.Range("J" & inputRange).Interior.Color = 65535
+    '    xlDeviceSheet.Range("J" & inputRange).Interior.TintAndShade = 0
+    'End Sub
+
+    'Private Sub unsetFunctionNode(inputRange As String)
+    '    xlDeviceSheet.Range("J" & inputRange).Interior.PatternColorIndex = Excel.XlPattern.xlPatternAutomatic
+    '    xlDeviceSheet.Range("J" & inputRange).Interior.ThemeColor = Excel.XlThemeColor.xlThemeColorAccent4
+    '    xlDeviceSheet.Range("J" & inputRange).Interior.TintAndShade = 0.799981688894314
+    '    xlDeviceSheet.Range("J" & inputRange).FormulaR1C1 = "00 00;"
+    'End Sub
+
     Private Sub setFunctionNode(inputRange As String)
-        xlDeviceSheet.Range("J" & inputRange).Interior.PatternColorIndex = Excel.XlPattern.xlPatternAutomatic
-        xlDeviceSheet.Range("J" & inputRange).Interior.Color = 65535
-        xlDeviceSheet.Range("J" & inputRange).Interior.TintAndShade = 0
+        Dim cell As Object
+        cell = xlDeviceSheet.Range("J" & inputRange)
+
+        With cell.Interior
+            .PatternColorIndex = Excel.XlPattern.xlPatternAutomatic
+            .Color = 65535
+            .TintAndShade = 0
+        End With
     End Sub
 
     Private Sub unsetFunctionNode(inputRange As String)
-        xlDeviceSheet.Range("J" & inputRange).Interior.PatternColorIndex = Excel.XlPattern.xlPatternAutomatic
-        xlDeviceSheet.Range("J" & inputRange).Interior.ThemeColor = Excel.XlThemeColor.xlThemeColorAccent4
-        xlDeviceSheet.Range("J" & inputRange).Interior.TintAndShade = 0.799981688894314
-        xlDeviceSheet.Range("J" & inputRange).FormulaR1C1 = "00 00;"
+        Dim cell As Object
+        cell = xlDeviceSheet.Range("J" & inputRange)
+
+        With cell.Interior
+            .PatternColorIndex = Excel.XlPattern.xlPatternAutomatic
+            .ThemeColor = Excel.XlThemeColor.xlThemeColorAccent4
+            .TintAndShade = 0.799981688894314
+        End With
+
+        cell.FormulaR1C1 = "00 00;"
     End Sub
 
     'Functions
@@ -496,8 +571,14 @@ Public Class XCX2
         Next i
 
         If cFunctionConvert = "00 00" Then
-            ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | Program" & thisRCU & " | line " & inputLine & " | " & inputString & "][Invalid function call]")
-            FunctionConvert = "01 01 00 00 00 00 00 00;"
+            If ConditionF = "01 01" Then
+                'thread redirect pointer not found, therefore it should not allow to pass down using nop. it should be an exit.
+                ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | Program" & thisRCU & " | line " & inputLine & " | " & inputString & "][Invalid function call]")
+                FunctionConvert = "04 01 00 00 00 00 00 00;"
+            Else
+                ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | Program" & thisRCU & " | line " & inputLine & " | " & inputString & "][Invalid function call]")
+                FunctionConvert = "01 01 00 00 00 00 00 00;"
+            End If
         Else
             If ConditionF = "01 01" Or ConditionF = "03 01" Or ConditionF = "03 02" Then
                 FunctionConvert = ConditionF & " " & cFunctionConvert & " " & X0.Grab_Time_1(inputString) & ";"
@@ -1726,18 +1807,18 @@ Public Class XCX2
         Dim LArray_T1() As String
         Dim LArray_GP() As String
         P = 0
-        LArray_T1 = Strings.Split(Strings.Replace(inputString, "#", " $"), " $")
-        For i = LBound(LArray_T1) To UBound(LArray_T1)
+        LArray_T1 = Strings.Split(Strings.Replace(inputString, " ", ""), "$")
 
-            If Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "dev=") Then
-                LArray_GP = Strings.Split(Strings.Replace(LArray_T1(i), " ", ""), "=")
-                If IsNumeric(LArray_GP(1)) AndAlso LArray_GP(0) = "dev" Then
+        For i = LBound(LArray_T1) To UBound(LArray_T1)
+            If Strings.InStr(LArray_T1(i), "dev=") = 1 Then
+                LArray_GP = Strings.Split(LArray_T1(i), "=")
+                If IsNumeric(LArray_GP(1)) Then
                     If CInt(LArray_GP(1)) > 0 AndAlso CInt(LArray_GP(1)) < (getDevLimit() - 2) Then ' 21 Then flexible dev
                         P = CInt(LArray_GP(1))
                     End If
-                ElseIf (LArray_GP(1) = "server" Or LArray_GP(1) = "db" Or LArray_GP(1) = "ff") AndAlso LArray_GP(0) = "dev" Then
+                ElseIf (LArray_GP(1) = "server" Or LArray_GP(1) = "db" Or LArray_GP(1) = "ff") Then
                     P = 255
-                ElseIf (LArray_GP(1) = "last" Or LArray_GP(1) = "previous" Or LArray_GP(1) = "fe") AndAlso LArray_GP(0) = "dev" Then
+                ElseIf (LArray_GP(1) = "last" Or LArray_GP(1) = "previous" Or LArray_GP(1) = "fe") Then
                     P = 254
                 ElseIf (Not IsNumeric(LArray_GP(1))) AndAlso LArray_GP(0) = "dev" Then
                     P = Grab_ID_from_Dev_Name(LArray_GP(1), thisRCU, ErrorWarnLog)

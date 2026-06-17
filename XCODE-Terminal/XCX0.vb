@@ -20,8 +20,8 @@ Public Class XCX0
     End Sub
 
     Private Sub updateVarDictionary()
-        Dim RcuVarList As String() = Strings.Split("04,05,06,07,08,09,0A,0B,0C,0D,0E,0F,10,11,12,13,14,14,33,15,16,32,17,18,19,1A,1B,1C,1D,1E,1F,20,21,22,23,24,25,26,27", ",")
-        Dim RcuVarNameList As String() = Strings.Split("anti_ice,checkin,thermo1,thermo2,thermo3,thermo4,thermo5,thermo6,temp1,temp2,temp3,temp4,temp5,temp6,season,intervention,room_empty,room_empty_temp,room_empty_thermo,user,workflow,auto_dnd,gs1,gs2,gs3,gs4,gs5,gs6,gs7,gs8,gs9,gs10,ioexp1,ioexp2,ioexp3,ioexp4,ioexp5,ioexp6,tag_minmax", ",")
+        Dim RcuVarList As String() = Strings.Split("04,05,06,07,08,09,0A,0B,0C,0D,0E,0F,10,11,12,13,14,14,33,15,16,32,17,18,19,1A,1B,1C,1D,1E,1F,20,21,22,23,24,25,26,27,30,31", ",")
+        Dim RcuVarNameList As String() = Strings.Split("anti_ice,checkin,thermo1,thermo2,thermo3,thermo4,thermo5,thermo6,temp1,temp2,temp3,temp4,temp5,temp6,season,intervention,room_empty,room_empty_temp,room_empty_thermo,user,workflow,auto_dnd,gs1,gs2,gs3,gs4,gs5,gs6,gs7,gs8,gs9,gs10,ioexp1,ioexp2,ioexp3,ioexp4,ioexp5,ioexp6,tag_minmax,inter_fan_offset,inter_valve_offset", ",")
 
         For i As Integer = LBound(RcuVarNameList) To UBound(RcuVarNameList)
             RCUVarDictionary(RcuVarNameList(i)) = RcuVarList(i)
@@ -482,11 +482,11 @@ Public Class XCX0
 
     'my version 
     Function getXCVer() As String
-        getXCVer = "5.5" 'major minor versions
+        getXCVer = "5.6" 'major minor versions
     End Function
 
     Function getXCbuildVer() As String
-        getXCbuildVer = "3" ' build version 
+        getXCbuildVer = "1" ' build version 
     End Function
 
     'utc functions
@@ -1584,14 +1584,14 @@ Public Class XCX0
         Dim LArray_T1() As String, i As Integer
 
         P = 0 : Q = 0 : R = 0
-        LArray_T1 = Strings.Split(Strings.Replace(inputString, "#", " $"), " $")
+        LArray_T1 = Strings.Split(Strings.Replace(inputString, " ", ""), "$")
 
         For i = LBound(LArray_T1) To UBound(LArray_T1)
-            If Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "hour=") Then
+            If Strings.InStr(LArray_T1(i), "hour=") = 1 Then
                 P = GrabPara_Dbl(LArray_T1(i), "hour")
-            ElseIf Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "min=") Then
+            ElseIf Strings.InStr(LArray_T1(i), "min=") = 1 Then
                 Q = GrabPara_Dbl(LArray_T1(i), "min")
-            ElseIf Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "sec=") Then
+            ElseIf Strings.InStr(LArray_T1(i), "sec=") = 1 Then
                 R = GrabPara_Dbl(LArray_T1(i), "sec")
             End If
         Next i
@@ -1608,14 +1608,14 @@ Public Class XCX0
         Dim LArray_T1() As String, i As Integer
 
         P = 0 : Q = 0 : R = 0
-        LArray_T1 = Strings.Split(Strings.Replace(inputString, "#", " $"), " $")
+        LArray_T1 = Strings.Split(Strings.Replace(inputString, " ", ""), "$")
 
         For i = LBound(LArray_T1) To UBound(LArray_T1)
-            If Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "hour=") Then
+            If Strings.InStr(LArray_T1(i), "hour=") = 1 Then
                 P = GrabPara_Dbl(LArray_T1(i), "hour")
-            ElseIf Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "min=") Then
+            ElseIf Strings.InStr(LArray_T1(i), "min=") = 1 Then
                 Q = GrabPara_Dbl(LArray_T1(i), "min")
-            ElseIf Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "sec=") Then
+            ElseIf Strings.InStr(LArray_T1(i), "sec=") = 1 Then
                 R = GrabPara_Dbl(LArray_T1(i), "sec")
             End If
         Next i
@@ -1632,14 +1632,14 @@ Public Class XCX0
         Dim LArray_T1() As String, i As Integer
 
         P = 0 : Q = 0 : R = 0
-        LArray_T1 = Strings.Split(Strings.Replace(inputString, "#", " $"), " $")
+        LArray_T1 = Strings.Split(Strings.Replace(inputString, " ", ""), "$")
 
         For i = LBound(LArray_T1) To UBound(LArray_T1)
-            If Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "hour=") Then
+            If Strings.InStr(LArray_T1(i), "hour=") = 1 Then
                 P = GrabPara_Dbl(LArray_T1(i), "hour")
-            ElseIf Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "min=") Then
+            ElseIf Strings.InStr(LArray_T1(i), "min=") = 1 Then
                 Q = GrabPara_Dbl(LArray_T1(i), "min")
-            ElseIf Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "sec=") Then
+            ElseIf Strings.InStr(LArray_T1(i), "sec=") = 1 Then
                 R = GrabPara_Dbl(LArray_T1(i), "sec")
             End If
         Next i
