@@ -17,8 +17,8 @@ Public Class XCX2
 
     Dim X0 As XCX0
 
-    Sub XCODE_Core1_Core2(ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String),
-                          ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean, ByRef RCUNameDictionary As Dictionary(Of String, String), ByRef IPDictionary As Dictionary(Of String, String))
+    Sub XCODE_Core1_Core2(MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String),
+                          ByRef ErrorWarnLog As String(), unAttended As Boolean, ByRef RCUNameDictionary As Dictionary(Of String, String), ByRef IPDictionary As Dictionary(Of String, String))
 
         xlWorkFunc = thisxlWorkFunc
         X0 = New XCX0(thisxlWorkFunc, unAttended)
@@ -304,9 +304,9 @@ Public Class XCX2
                     ThisHexCode = DimFlowConvert(ThisTempLine, ce2.Offset(0, -2).Text, thisRCU, ErrorWarnLog)
                 Else
                     'else part goes here, catching poorly written instructions
-                    If Strings.InStr(ThisTempLine, ".set") > 1 Or Strings.InStr(ThisTempLine, ".unset") > 1 Or Strings.InStr(ThisTempLine, ".or") > 1 Or Strings.InStr(ThisTempLine, ".and") > 1 Or Strings.InStr(ThisTempLine, ".xor") > 1 Then  '[dropped from 5.2] Or Strings.instr(ThisTempLine, "$") > 2 Then
+                    If Strings.InStr(ThisTempLine, ".set") > 1 OrElse Strings.InStr(ThisTempLine, ".unset") > 1 OrElse Strings.InStr(ThisTempLine, ".or") > 1 OrElse Strings.InStr(ThisTempLine, ".and") > 1 OrElse Strings.InStr(ThisTempLine, ".xor") > 1 Then  '[dropped from 5.2] Or Strings.instr(ThisTempLine, "$") > 2 Then
                         ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & ce2.Offset(0, -2).Text & " | " & ThisTempLine & "][Undefined variable | " & Strings.Left(ThisTempLine, Strings.InStr(ThisTempLine, ".") - 1) & "]")
-                    ElseIf (Strings.InStr(ThisTempLine, "wait ") > 0) AndAlso (Not (Strings.InStr(ThisTempLine, "$hour") > 5 Or Strings.InStr(ThisTempLine, "$min") > 5 Or Strings.InStr(ThisTempLine, "$sec") > 5)) Then 'added from 5.2
+                    ElseIf (Strings.InStr(ThisTempLine, "wait ") > 0) AndAlso (Not (Strings.InStr(ThisTempLine, "$hour") > 5 OrElse Strings.InStr(ThisTempLine, "$min") > 5 OrElse Strings.InStr(ThisTempLine, "$sec") > 5)) Then 'added from 5.2
                         ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & ce2.Offset(0, -2).Text & " | " & ThisTempLine & "][Invalid parameter | " & Strings.Replace(ThisTempLine, "wait ", "") & "]")
                     End If
                 End If
@@ -344,25 +344,25 @@ Public Class XCX2
     End Sub
 
     'inserters xcode
-    Private Sub insertXCODE(ByVal cLineNum As Integer, ByVal cXCODE As String, Optional ByVal HEXCODE As String = "01 01 00 00 00 00 00 00;")
+    Private Sub insertXCODE(cLineNum As Integer, cXCODE As String, Optional HEXCODE As String = "01 01 00 00 00 00 00 00;")
         'xlProgramSheet.Range("D" & (cLineNum + 3)).FormulaR1C1 = xlWorkFunc.Dec2Hex(cLineNum, 4)
         'xlProgramSheet.Range("F" & (cLineNum + 3)).FormulaR1C1 = cXCODE
         xlProgramSheet.Range("D" & (cLineNum + 3)).Resize(1, 3).Value = New Object(,) {{xlWorkFunc.Dec2Hex(cLineNum, 4), HEXCODE, cXCODE}}
     End Sub
 
-    Private Function getXCODEArrayObject(ByVal cLineNum As Integer, ByVal cXCODE As String, Optional ByVal HEXCODE As String = "01 01 00 00 00 00 00 00;") As String()
+    Private Function getXCODEArrayObject(cLineNum As Integer, cXCODE As String, Optional HEXCODE As String = "01 01 00 00 00 00 00 00;") As String()
         getXCODEArrayObject = New String() {xlWorkFunc.Dec2Hex(cLineNum, 4), HEXCODE, cXCODE}
     End Function
 
-    Private Sub insertHEXCODE(ByVal cLineNum As Integer, ByVal cXCODE As String)
+    Private Sub insertHEXCODE(cLineNum As Integer, cXCODE As String)
         xlProgramSheet.Range("E" & (cLineNum + 3)).FormulaR1C1 = cXCODE
     End Sub
 
-    Private Sub insertHEXArray(ByVal cArray As String(,), ByVal cHeight As Integer)
+    Private Sub insertHEXArray(cArray As String(,), cHeight As Integer)
         xlProgramSheet.Range("E4").Resize(cHeight, 1).Value = cArray
     End Sub
 
-    Private Sub insertFunction(ByVal cFcount As Integer, ByVal cLineNum As Integer, ByVal Fname As String)
+    Private Sub insertFunction(cFcount As Integer, cLineNum As Integer, Fname As String)
         'xlFUNCTIONSheet.Range("D" & (cFcount + 3)).FormulaR1C1 = cFcount
         'xlFUNCTIONSheet.Range("E" & (cFcount + 3)).FormulaR1C1 = Fname
         'xlFUNCTIONSheet.Range("F" & (cFcount + 3)).FormulaR1C1 = xlWorkFunc.Dec2Hex(cLineNum, 4)
@@ -371,7 +371,7 @@ Public Class XCX2
         FunctionDictionary.Add(Fname, xlWorkFunc.Dec2Hex(cLineNum, 4))
     End Sub
 
-    Private Sub insertStartupHEXCODE(ByVal cLineNum As Integer, ByVal cXCODE As String, ByVal thisRCU As String)
+    Private Sub insertStartupHEXCODE(cLineNum As Integer, cXCODE As String, thisRCU As String)
         Dim LArray1() As String, thisFunc() As String, LineJ() As String
         Dim i As Integer, j As Integer, cFC As String
 
@@ -393,7 +393,7 @@ Public Class XCX2
     End Sub
 
     ' devices function calibration
-    'Private Sub FunctionCalibrate(ByVal thisRCU As String)
+    'Private Sub FunctionCalibrate(thisRCU As String)
     '    Dim ce3 As Excel.Range, pcount As Double, pfullcount As Double
     '    pcount = 0 : pfullcount = 0
     '    pfullcount = xlDeviceSheet.Range(xlDeviceSheet.Range("J4"), xlDeviceSheet.Range("J4").End(Excel.XlDirection.xlDown)).Count
@@ -432,20 +432,21 @@ Public Class XCX2
 
     'End Sub
 
-    Private Sub FunctionCalibrate(ByVal thisRCU As String)
+    Private Sub FunctionCalibrate(thisRCU As String)
         Dim startCell As Excel.Range
         Dim dataRange As Excel.Range
         Dim ce3 As Excel.Range
         Dim pcount As Double, pfullcount As Double
+        Dim offsetCell As Excel.Range
+        Dim tempJumpOld As String, tempJump As String, newLine As String
 
         pcount = 0
-
         startCell = xlDeviceSheet.Range("J4")
         dataRange = xlDeviceSheet.Range(startCell, startCell.End(Excel.XlDirection.xlDown))
         pfullcount = dataRange.Count
 
         For Each ce3 In dataRange
-            Dim offsetCell As Excel.Range
+
             offsetCell = ce3.Offset(0, 4)
 
             If Trim(offsetCell.Text) <> "" Then
@@ -453,11 +454,30 @@ Public Class XCX2
                 thisFunc = LCase(Trim(offsetCell.Text))
 
                 If Not isNotDuplicateFunction(thisFunc) Then
-                    Dim tempJumpOld As String, tempJump As String
+
                     tempJumpOld = Mid(Replace(Trim(ce3.Text), ";", ""), 4, 1)
-                    tempJump = tempJumpOld & Right(getLineFromFunctionName(thisFunc, 3, thisRCU), 3)
-                    ce3.FormulaR1C1 = Right(tempJump, 2) & " " & Left(tempJump, 2) & ";"
-                    setFunctionNode(CStr(ce3.Row))
+                    newLine = getLineFromFunctionName(thisFunc, 3, thisRCU)
+
+                    If Left(newLine, 1) = "0" Then
+                        tempJump = tempJumpOld & Right(newLine, 3)
+                        ce3.FormulaR1C1 = Right(tempJump, 2) & " " & Left(tempJump, 2) & ";"
+                        setFunctionNode(CStr(ce3.Row))
+                    Else
+                        If offsetCell.MergeCells Then
+                            With offsetCell.MergeArea
+                                .Interior.ColorIndex = 0
+                                '.ClearContents()
+                                .UnMerge()
+                            End With
+                        End If
+
+                        With offsetCell
+                            .Interior.ColorIndex = 0
+                            '.ClearContents()
+                        End With
+
+                        unsetFunctionNode(CStr(ce3.Row))
+                    End If
                 Else
                     If offsetCell.MergeCells Then
                         With offsetCell.MergeArea
@@ -481,6 +501,11 @@ Public Class XCX2
             pcount = pcount + 1
             X0.ConsoleProgress("Formatter > Device" & thisRCU & " inputs Calibration", (pcount * 100.0# / pfullcount))
         Next ce3
+
+        startCell = Nothing
+        dataRange = Nothing
+        ce3 = Nothing
+        offsetCell = Nothing
     End Sub
 
     'Private Sub setFunctionNode(inputRange As String)
@@ -521,7 +546,7 @@ Public Class XCX2
     End Sub
 
     'Functions
-    Private Function isNotDuplicateFunction(ByVal inputString As String) As Boolean
+    Private Function isNotDuplicateFunction(inputString As String) As Boolean
         'If Strings.Len(xlFUNCTIONSheet.Range("E3").Text) = 0 Then
         '    isNotDuplicateFunction = True
         'ElseIf Strings.Len(xlFUNCTIONSheet.Range("E4").Text) = 0 Then
@@ -551,14 +576,14 @@ Public Class XCX2
     'convertors
 
     'goto, gotowait, 03 01, 03 02, 03 03, if conditions
-    Private Function FunctionConvert(ByVal inputString As String, inputLine As Integer, ByRef thisWorkbook As Excel.Workbook, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function FunctionConvert(inputString As String, inputLine As Integer, ByRef thisWorkbook As Excel.Workbook, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         Dim LArray() As String, ConditionF As String, i As Integer
         Dim thisFunction As String, cFunctionConvert As String, LineJump As String, damper As String
         Dim withVar As Boolean
 
         cFunctionConvert = "00 00" : withVar = False : damper = "00"
         ConditionF = ConditionSet(inputString, thisRCU, ErrorWarnLog)
-        withVar = X0.hasValidVar(inputString) Or hasValidC_Var(inputString)
+        withVar = X0.hasValidVar(inputString) OrElse hasValidC_Var(inputString)
         LArray = Strings.Split(inputString, " ")
 
         For i = LBound(LArray) To UBound(LArray)
@@ -580,7 +605,7 @@ Public Class XCX2
                 FunctionConvert = "01 01 00 00 00 00 00 00;"
             End If
         Else
-            If ConditionF = "01 01" Or ConditionF = "03 01" Or ConditionF = "03 02" Then
+            If ConditionF = "01 01" OrElse ConditionF = "03 01" OrElse ConditionF = "03 02" Then
                 FunctionConvert = ConditionF & " " & cFunctionConvert & " " & X0.Grab_Time_1(inputString) & ";"
             ElseIf ConditionF = "03 03" Then
                 FunctionConvert = ConditionF & " " & cFunctionConvert & " " & Strings.Left(X0.Grab_Time_1(inputString), 8) & " " & Grab_Dev_1(inputString, thisRCU, ErrorWarnLog) & ";"
@@ -618,34 +643,34 @@ Public Class XCX2
 
     End Function
 
-    Private Function ConditionSet(ByVal inputString As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function ConditionSet(inputString As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
 
         If Strings.InStr(inputString, "if ") = 1 Then
-            If (Strings.InStr(inputString, "bit ") > 0 Or Strings.InStr(inputString, "bitwise ") > 0) AndAlso (Strings.InStr(inputString, "true ") > 0 Or Strings.InStr(inputString, "check ") > 0) Then
+            If (Strings.InStr(inputString, "bit ") > 0 OrElse Strings.InStr(inputString, "bitwise ") > 0) AndAlso (Strings.InStr(inputString, "true ") > 0 OrElse Strings.InStr(inputString, "check ") > 0) Then
                 ConditionSet = "09 01"
-            ElseIf (Strings.InStr(inputString, "bit ") > 0 Or Strings.InStr(inputString, "bitwise ") > 0) AndAlso Strings.InStr(inputString, "run ") > 0 Then
+            ElseIf (Strings.InStr(inputString, "bit ") > 0 OrElse Strings.InStr(inputString, "bitwise ") > 0) AndAlso Strings.InStr(inputString, "run ") > 0 Then
                 ConditionSet = "60 01"
-            ElseIf Strings.InStr(inputString, "not equal ") > 0 Or Strings.InStr(inputString, "not equals to ") > 0 Or Strings.InStr(Strings.Replace(inputString, " ", ""), "if<>") = 1 Or Strings.InStr(Strings.Replace(inputString, " ", ""), "if!=") = 1 Then
+            ElseIf Strings.InStr(inputString, "not equal ") > 0 OrElse Strings.InStr(inputString, "not equals to ") > 0 OrElse Strings.InStr(Strings.Replace(inputString, " ", ""), "if<>") = 1 OrElse Strings.InStr(Strings.Replace(inputString, " ", ""), "if!=") = 1 Then
                 ConditionSet = "05 01"
-            ElseIf Strings.InStr(inputString, "equal ") > 0 Or Strings.InStr(inputString, "equals to ") > 0 Or Strings.InStr(Strings.Replace(inputString, " ", ""), "if=") = 1 Then
+            ElseIf Strings.InStr(inputString, "equal ") > 0 OrElse Strings.InStr(inputString, "equals to ") > 0 OrElse Strings.InStr(Strings.Replace(inputString, " ", ""), "if=") = 1 Then
                 ConditionSet = "08 01"
-            ElseIf Strings.InStr(inputString, "greater ") > 0 Or Strings.InStr(inputString, "greater than ") > 0 Or Strings.InStr(Strings.Replace(inputString, " ", ""), "if>") = 1 Then
+            ElseIf Strings.InStr(inputString, "greater ") > 0 OrElse Strings.InStr(inputString, "greater than ") > 0 OrElse Strings.InStr(Strings.Replace(inputString, " ", ""), "if>") = 1 Then
                 ConditionSet = "06 01"
-            ElseIf Strings.InStr(inputString, "lesser ") > 0 Or Strings.InStr(inputString, "less than ") > 0 Or Strings.InStr(Strings.Replace(inputString, " ", ""), "if<") = 1 Then
+            ElseIf Strings.InStr(inputString, "lesser ") > 0 OrElse Strings.InStr(inputString, "less than ") > 0 OrElse Strings.InStr(Strings.Replace(inputString, " ", ""), "if<") = 1 Then
                 ConditionSet = "07 01"
             Else
                 ConditionSet = "01 01"
             End If
         ElseIf Strings.InStr(inputString, "dimflow.") = 1 Then
-            If Strings.InStr(inputString, ".oncheck ") > 0 Or Strings.InStr(inputString, ".checkon ") > 0 Then
+            If Strings.InStr(inputString, ".oncheck ") > 0 OrElse Strings.InStr(inputString, ".checkon ") > 0 Then
                 ConditionSet = "5b 0A"
-            ElseIf Strings.InStr(inputString, ".offcheck ") > 0 Or Strings.InStr(inputString, ".checkoff ") > 0 Then
+            ElseIf Strings.InStr(inputString, ".offcheck ") > 0 OrElse Strings.InStr(inputString, ".checkoff ") > 0 Then
                 ConditionSet = "5c 0A"
             Else
                 ConditionSet = "01 01"
             End If
-        ElseIf Strings.InStr(inputString, "run ") = 1 Or Strings.InStr(inputString, "reuse ") = 1 Or Strings.InStr(inputString, "re-run ") = 1 Or Strings.InStr(inputString, "rerun ") = 1 Then
-            If Strings.InStr(inputString, "reuse ") = 1 Or Strings.InStr(inputString, "re-run ") = 1 Or Strings.InStr(inputString, "rerun ") = 1 Then
+        ElseIf Strings.InStr(inputString, "run ") = 1 OrElse Strings.InStr(inputString, "reuse ") = 1 OrElse Strings.InStr(inputString, "re-run ") = 1 OrElse Strings.InStr(inputString, "rerun ") = 1 Then
+            If Strings.InStr(inputString, "reuse ") = 1 OrElse Strings.InStr(inputString, "re-run ") = 1 OrElse Strings.InStr(inputString, "rerun ") = 1 Then
                 If xlWorkFunc.Hex2Dec(Grab_Dev_1(inputString, thisRCU, ErrorWarnLog)) > 0 Then
                     ConditionSet = "03 03"
                 Else
@@ -659,11 +684,11 @@ Public Class XCX2
         End If
     End Function
 
-    Private Function getLineFromFunctionName(ByVal inputString As String, ByVal inputLine As Integer, ByVal thisRCU As String) As String
+    Private Function getLineFromFunctionName(inputString As String, inputLine As Integer, thisRCU As String) As String
         Dim ce As Excel.Range
         getLineFromFunctionName = "0000"
 
-        If inputString = "exit" Or inputString = "quit" Or inputString = "end" Then
+        If inputString = "exit" OrElse inputString = "quit" OrElse inputString = "end" Then
             If Strings.Len(xlProgramSheet.Range("F" & (inputLine + 1)).Text) = 0 Then
                 'to remove this condition from else
             ElseIf Strings.Len(xlProgramSheet.Range("F" & (inputLine + 2)).Text) = 0 Then
@@ -706,7 +731,7 @@ Public Class XCX2
 
 
     ' rcu convert
-    Private Function RCUConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function RCUConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         Dim Opt As String, Smode As String
         Opt = "09" : Smode = "01"
 
@@ -722,9 +747,9 @@ Public Class XCX2
             Opt = "0E"
         ElseIf Strings.InStr(inputString, "rcu.read es") = 1 Then
             Opt = "H1"
-        ElseIf Strings.InStr(inputString, "rcu.read aout2") = 1 Or Strings.InStr(inputString, "rcu.read analog2") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.read aout2") = 1 OrElse Strings.InStr(inputString, "rcu.read analog2") = 1 Then
             Opt = "H3"
-        ElseIf Strings.InStr(inputString, "rcu.read aout") = 1 Or Strings.InStr(inputString, "rcu.read analog") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.read aout") = 1 OrElse Strings.InStr(inputString, "rcu.read analog") = 1 Then
             Opt = "H2"
         ElseIf Strings.InStr(inputString, "rcu.read") = 1 Then
             Opt = "03"
@@ -736,51 +761,51 @@ Public Class XCX2
             Opt = "0D"
         ElseIf Strings.InStr(inputString, "rcu.set ") = 1 AndAlso Strings.InStr(inputString, " all") > 0 Then
             Opt = "04"
-        ElseIf (Strings.InStr(inputString, "rcu.set ") = 1 Or Strings.InStr(inputString, "rcu.unset ") = 1) AndAlso Strings.InStr(inputString, " es") > 0 Then
+        ElseIf (Strings.InStr(inputString, "rcu.set ") = 1 OrElse Strings.InStr(inputString, "rcu.unset ") = 1) AndAlso Strings.InStr(inputString, " es") > 0 Then
             Opt = "05"
-        ElseIf (Strings.InStr(inputString, "rcu.set ") = 1 Or Strings.InStr(inputString, "rcu.unset ") = 1) AndAlso (Strings.InStr(inputString, " analog2") > 0 Or Strings.InStr(inputString, " aout2") > 0) Then
+        ElseIf (Strings.InStr(inputString, "rcu.set ") = 1 OrElse Strings.InStr(inputString, "rcu.unset ") = 1) AndAlso (Strings.InStr(inputString, " analog2") > 0 OrElse Strings.InStr(inputString, " aout2") > 0) Then
             Opt = "07"
-        ElseIf (Strings.InStr(inputString, "rcu.set ") = 1 Or Strings.InStr(inputString, "rcu.unset ") = 1) AndAlso (Strings.InStr(inputString, " analog") > 0 Or Strings.InStr(inputString, " aout") > 0) Then
+        ElseIf (Strings.InStr(inputString, "rcu.set ") = 1 OrElse Strings.InStr(inputString, "rcu.unset ") = 1) AndAlso (Strings.InStr(inputString, " analog") > 0 OrElse Strings.InStr(inputString, " aout") > 0) Then
             Opt = "06"
-        ElseIf Strings.InStr(inputString, "rcu.set ") = 1 Or Strings.InStr(inputString, "rcu.or ") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.set ") = 1 OrElse Strings.InStr(inputString, "rcu.or ") = 1 Then
             Opt = "09"
-        ElseIf Strings.InStr(inputString, "rcu.unset ") = 1 Or Strings.InStr(inputString, "rcu.and ") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.unset ") = 1 OrElse Strings.InStr(inputString, "rcu.and ") = 1 Then
             Opt = "0A"
         ElseIf Strings.InStr(inputString, "rcu.pwm ") = 1 Then
             Opt = "00"
         ElseIf Strings.InStr(inputString, "rcu.dim es") = 1 Then
             Opt = "G0"
-        ElseIf Strings.InStr(inputString, "rcu.dim aout2") = 1 Or Strings.InStr(inputString, "rcu.dim analog2") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.dim aout2") = 1 OrElse Strings.InStr(inputString, "rcu.dim analog2") = 1 Then
             Opt = "G2"
-        ElseIf Strings.InStr(inputString, "rcu.dim aout") = 1 Or Strings.InStr(inputString, "rcu.dim analog") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.dim aout") = 1 OrElse Strings.InStr(inputString, "rcu.dim analog") = 1 Then
             Opt = "G1"
         ElseIf Strings.InStr(inputString, "rcu.stop es") = 1 Then
             Opt = "I0"
-        ElseIf Strings.InStr(inputString, "rcu.stop aout2") = 1 Or Strings.InStr(inputString, "rcu.stop analog2") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.stop aout2") = 1 OrElse Strings.InStr(inputString, "rcu.stop analog2") = 1 Then
             Opt = "I2"
-        ElseIf Strings.InStr(inputString, "rcu.stop aout") = 1 Or Strings.InStr(inputString, "rcu.stop analog") = 1 Then
+        ElseIf Strings.InStr(inputString, "rcu.stop aout") = 1 OrElse Strings.InStr(inputString, "rcu.stop analog") = 1 Then
             Opt = "I1"
         End If
 
-        If Opt = "03" Or Opt = "08" Or Opt = "0C" Or Opt = "0E" Then
+        If Opt = "03" OrElse Opt = "08" OrElse Opt = "0C" OrElse Opt = "0E" Then
             RCUConvert = "02 " & Opt & " 00 00 00 00 00 00;"
-        ElseIf Opt = "H1" Or Opt = "H2" Or Opt = "H3" Then
+        ElseIf Opt = "H1" OrElse Opt = "H2" OrElse Opt = "H3" Then
             RCUConvert = "53 0" & Strings.Right(Opt, 1) & " 00 00 00 00 00 00;"
         ElseIf X0.hasValidVar(inputString) Then
-            If Strings.Left(Opt, 1) = "G" Or Strings.Left(Opt, 1) = "I" Then
+            If Strings.Left(Opt, 1) = "G" OrElse Strings.Left(Opt, 1) = "I" Then
                 RCUConvert = "5" & Strings.Right(Opt, 1) & " 0A 00 00 " & X0.Grab_Var_1(inputString) & " 00 00 00;"
             Else
                 RCUConvert = "02 " & Opt & " 0A 00 " & X0.Grab_Var_1(inputString) & " 00 00 00;"
             End If
         ElseIf hasValidC_Var(inputString) Then
-            If Strings.Left(Opt, 1) = "G" Or Strings.Left(Opt, 1) = "I" Then
+            If Strings.Left(Opt, 1) = "G" OrElse Strings.Left(Opt, 1) = "I" Then
                 RCUConvert = "5" & Strings.Right(Opt, 1) & " 0A 00 00 " & Grab_Var_2(inputString) & " 00 00 00;"
             Else
                 RCUConvert = "02 " & Opt & " 0A 00 " & Grab_Var_2(inputString) & " 00 00 00;"
             End If
         Else
             If Smode = "00" Then
-                If Strings.Left(Opt, 1) = "G" Or Strings.Left(Opt, 1) = "I" Then
+                If Strings.Left(Opt, 1) = "G" OrElse Strings.Left(Opt, 1) = "I" Then
                     RCUConvert = "5" & Strings.Right(Opt, 1) & " 00 00 00 00 00 00 00;"
                 Else
                     RCUConvert = "02 " & Opt & " 00 00 00 00 00 00;"
@@ -790,7 +815,7 @@ Public Class XCX2
                     ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | Program" & thisRCU & " | line " & thisLine & " | " & inputString & "][Undefined variable | " & X0.Grab_variant(inputString, "var") & "]")
                     RCUConvert = "01 01 00 00 00 00 00 00;"
                 Else
-                    If Opt = "05" Or Opt = "06" Or Opt = "07" Then
+                    If Opt = "05" OrElse Opt = "06" OrElse Opt = "07" Then
                         If Strings.InStr(inputString, "rcu.unset ") = 1 Then
                             RCUConvert = "02 " & Opt & " 01 00 00 00 00 00;"
                         Else
@@ -804,7 +829,7 @@ Public Class XCX2
                         Else
                             RCUConvert = "02 " & Opt & " 01 00 " & X0.Grab_value_4(inputString) & " 00 00 00;"
                         End If
-                    ElseIf Strings.Left(Opt, 1) = "G" Or Strings.Left(Opt, 1) = "I" Then
+                    ElseIf Strings.Left(Opt, 1) = "G" OrElse Strings.Left(Opt, 1) = "I" Then
                         RCUConvert = "5" & Strings.Right(Opt, 1) & " 01 00 00 " & X0.Grab_Time_3(inputString) & " " & X0.Grab_value_4(inputString) & ";"
                     Else
                         RCUConvert = "02 " & Opt & " 01 00 " & X0.Grab_value_1(inputString, "OR") & ";"
@@ -815,7 +840,7 @@ Public Class XCX2
     End Function
 
     ' dmx convert
-    Private Function DMXConvert(ByVal inputString As String) As String
+    Private Function DMXConvert(inputString As String) As String
         Dim Opt As String, Smode As String, ioCh As String
         Opt = "01" : Smode = "01"
 
@@ -825,9 +850,9 @@ Public Class XCX2
 
         ioCh = X0.Grab_variant(inputString, "ch")
 
-        If Strings.InStr(inputString, "dmx.send ") = 1 Or Strings.InStr(inputString, "dmx.ramp ") = 1 Or Strings.InStr(inputString, "dmx.set ") = 1 Then
+        If Strings.InStr(inputString, "dmx.send ") = 1 OrElse Strings.InStr(inputString, "dmx.ramp ") = 1 OrElse Strings.InStr(inputString, "dmx.set ") = 1 Then
             Opt = "01"
-        ElseIf Strings.InStr(inputString, "dmx.stop ") = 1 Or Strings.InStr(inputString, "dmx.hold ") = 1 Then
+        ElseIf Strings.InStr(inputString, "dmx.stop ") = 1 OrElse Strings.InStr(inputString, "dmx.hold ") = 1 Then
             Opt = "02"
         ElseIf Strings.InStr(inputString, "dmx.read ") = 1 Then
             Opt = "03"
@@ -857,7 +882,7 @@ Public Class XCX2
     End Function
 
     'abs convert
-    Private Function WaitABSConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function WaitABSConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         If X0.hasValidVar(inputString) Then
             WaitABSConvert = "0A 0A 00 00 " & X0.Grab_Var_1(inputString) & " 00 00 00;"
         ElseIf hasValidC_Var(inputString) Then
@@ -871,7 +896,7 @@ Public Class XCX2
     End Function
 
     ' load convert
-    Private Function LoadConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function LoadConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         Dim Smode As String
         Smode = "00"
         If Strings.InStr(inputString, "shift ") > 1 Then
@@ -915,7 +940,7 @@ Public Class XCX2
         ElseIf Strings.InStr(inputString, " enum") > 1 Then
             LoadConvert = "10 80 10 " & Smode & " 00 00 00 00;"
         ElseIf Strings.InStr(inputString, " time") > 1 Then
-            If Strings.InStr(inputString, " unix") > 1 Or Strings.InStr(inputString, " utc") > 1 Then
+            If Strings.InStr(inputString, " unix") > 1 OrElse Strings.InStr(inputString, " utc") > 1 Then
                 LoadConvert = "10 84 00 " & Smode & " 00 00 00 00;"
             ElseIf Strings.InStr(inputString, " now") > 1 Then
                 LoadConvert = "10 80 01 " & Smode & " " & X0.Give_Time_1() & ";"
@@ -933,8 +958,8 @@ Public Class XCX2
     End Function
 
     ' send convert
-    Private Function SendConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
-        If (Strings.InStr(inputString, "send.mod ") = 1 Or Strings.InStr(inputString, "send.modbus ") = 1) AndAlso (Strings.InStr(inputString, " $dev=") > 5 Or Strings.InStr(inputString, " $type=") > 5) AndAlso Strings.InStr(inputString, " $reg=") > 5 Then
+    Private Function SendConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
+        If (Strings.InStr(inputString, "send.mod ") = 1 OrElse Strings.InStr(inputString, "send.modbus ") = 1) AndAlso (Strings.InStr(inputString, " $dev=") > 5 OrElse Strings.InStr(inputString, " $type=") > 5) AndAlso Strings.InStr(inputString, " $reg=") > 5 Then
             Dim thisDev As String = Grab_Dev_1(inputString, thisRCU, ErrorWarnLog)
             If xlWorkFunc.Hex2Dec(thisDev) > 0 Then
                 '20 & 22
@@ -961,8 +986,8 @@ Public Class XCX2
     End Function
 
     ' read convert
-    Private Function ReadConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
-        If Strings.InStr(inputString, "read.mod ") = 1 Or Strings.InStr(inputString, "read.modbus ") = 1 Then
+    Private Function ReadConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
+        If Strings.InStr(inputString, "read.mod ") = 1 OrElse Strings.InStr(inputString, "read.modbus ") = 1 Then
             Dim thisDev As String = Grab_Dev_1(inputString, thisRCU, ErrorWarnLog)
             If xlWorkFunc.Hex2Dec(thisDev) > 0 Then
                 '20 & 22
@@ -984,7 +1009,7 @@ Public Class XCX2
     End Function
 
     ' save convert
-    Private Function SaveConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function SaveConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         Dim Smode As String
         Smode = "00"
 
@@ -1036,7 +1061,7 @@ Public Class XCX2
     End Function
 
     ' math convert
-    Private Function MathConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function MathConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         Dim Opt As String, Smode As String
         Opt = "80" : Smode = "00"
 
@@ -1044,25 +1069,25 @@ Public Class XCX2
             Smode = "01"
         End If
 
-        If Strings.InStr(inputString, "math.add ") = 1 Or Strings.InStr(inputString, "math.+ ") = 1 Then
+        If Strings.InStr(inputString, "math.add ") = 1 OrElse Strings.InStr(inputString, "math.+ ") = 1 Then
             Opt = "01"
-        ElseIf Strings.InStr(inputString, "math.sub ") = 1 Or Strings.InStr(inputString, "math.- ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.sub ") = 1 OrElse Strings.InStr(inputString, "math.- ") = 1 Then
             Opt = "02"
-        ElseIf Strings.InStr(inputString, "math.mul ") = 1 Or Strings.InStr(inputString, "math.* ") = 1 Or Strings.InStr(inputString, "math.x ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.mul ") = 1 OrElse Strings.InStr(inputString, "math.* ") = 1 OrElse Strings.InStr(inputString, "math.x ") = 1 Then
             Opt = "03"
-        ElseIf Strings.InStr(inputString, "math.or ") = 1 Or Strings.InStr(inputString, "math.|| ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.or ") = 1 OrElse Strings.InStr(inputString, "math.|| ") = 1 Then
             Opt = "04"
-        ElseIf Strings.InStr(inputString, "math.xor ") = 1 Or Strings.InStr(inputString, "math.x| ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.xor ") = 1 OrElse Strings.InStr(inputString, "math.x| ") = 1 Then
             Opt = "05"
-        ElseIf Strings.InStr(inputString, "math.and ") = 1 Or Strings.InStr(inputString, "math.&& ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.and ") = 1 OrElse Strings.InStr(inputString, "math.&& ") = 1 Then
             Opt = "06"
-        ElseIf Strings.InStr(inputString, "math.shiftl ") = 1 Or Strings.InStr(inputString, "math.<< ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.shiftl ") = 1 OrElse Strings.InStr(inputString, "math.<< ") = 1 Then
             Opt = "07"
-        ElseIf Strings.InStr(inputString, "math.shiftr ") = 1 Or Strings.InStr(inputString, "math.>> ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.shiftr ") = 1 OrElse Strings.InStr(inputString, "math.>> ") = 1 Then
             Opt = "08"
-        ElseIf Strings.InStr(inputString, "math.div ") = 1 Or Strings.InStr(inputString, "math./ ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.div ") = 1 OrElse Strings.InStr(inputString, "math./ ") = 1 Then
             Opt = "09"
-        ElseIf Strings.InStr(inputString, "math.mod ") = 1 Or Strings.InStr(inputString, "math.% ") = 1 Then
+        ElseIf Strings.InStr(inputString, "math.mod ") = 1 OrElse Strings.InStr(inputString, "math.% ") = 1 Then
             Opt = "0A"
         End If
 
@@ -1091,15 +1116,15 @@ Public Class XCX2
     End Function
 
     ' dim flow convert
-    Private Function DimFlowConvert(ByVal inputString As String, ByVal thisLine As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function DimFlowConvert(inputString As String, thisLine As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         Dim Dmode As String
         Dmode = "01 01"
 
-        If Strings.InStr(inputString, ".start ") > 0 Or Strings.InStr(inputString, ".onstart ") > 0 Or Strings.InStr(inputString, ".starton ") > 0 Then
+        If Strings.InStr(inputString, ".start ") > 0 OrElse Strings.InStr(inputString, ".onstart ") > 0 OrElse Strings.InStr(inputString, ".starton ") > 0 Then
             Dmode = "5a 0A"
-        ElseIf Strings.InStr(inputString, ".getdir") > 0 Or Strings.InStr(inputString, ".dirget ") > 0 Then
+        ElseIf Strings.InStr(inputString, ".getdir") > 0 OrElse Strings.InStr(inputString, ".dirget ") > 0 Then
             Dmode = "5e 0A"
-        ElseIf Strings.InStr(inputString, ".setdir") > 0 Or Strings.InStr(inputString, ".dirset ") > 0 Then
+        ElseIf Strings.InStr(inputString, ".setdir") > 0 OrElse Strings.InStr(inputString, ".dirset ") > 0 Then
             Dmode = "5d 0A"
         End If
 
@@ -1125,12 +1150,12 @@ Public Class XCX2
 
 
     ' is other var direct
-    Private Function isOtherVarDirect(ByVal inputString As String) As Boolean
+    Private Function isOtherVarDirect(inputString As String) As Boolean
         If Strings.InStr(inputString, ".") > 0 Then
             Dim VarArray() As String, tempS As String
             VarArray = Strings.Split(inputString, ".")
             tempS = "load $var=" & VarArray(0) 'create a simple load instruction with var
-            If X0.hasValidVar(tempS) Or hasValidC_Var(tempS) Or hasValidM_Var(tempS) Then
+            If X0.hasValidVar(tempS) OrElse hasValidC_Var(tempS) OrElse hasValidM_Var(tempS) Then
                 isOtherVarDirect = True
             Else
                 isOtherVarDirect = False
@@ -1141,7 +1166,7 @@ Public Class XCX2
     End Function
 
     'custom var
-    Private Function hasValidC_Var(ByVal inputString As String) As Boolean 'Custom var, moified in ver 5.0
+    Private Function hasValidC_Var(inputString As String) As Boolean 'Custom var, moified in ver 5.0
         hasValidC_Var = False
         If C_VarListNotEmpty() Then
             Dim LArray_T2() As String, V As String, i As Integer
@@ -1156,12 +1181,12 @@ Public Class XCX2
             If V <> "" Then
                 'Dim rngVar As Excel.Range
                 'For Each rngVar In xlCustomVarSheet.Range(xlCustomVarSheet.Range("B3").Offset(1, 0), xlCustomVarSheet.Range("B3").End(Excel.XlDirection.xlDown))
-                '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) Or V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
+                '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) orelse V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
                 '        hasValidC_Var = True
                 '        Exit Function
                 '    End If
                 'Next rngVar
-                If CustomVarDictionary.ContainsKey(V) Or CustomVarDictionary.ContainsValue(V) Then
+                If CustomVarDictionary.ContainsKey(V) OrElse CustomVarDictionary.ContainsValue(V) Then
                     hasValidC_Var = True
                 End If
             End If
@@ -1180,7 +1205,7 @@ Public Class XCX2
         End If
     End Function
 
-    Private Function Grab_Var_2(ByVal inputString As String) As String 'Custom var
+    Private Function Grab_Var_2(inputString As String) As String 'Custom var
         Dim V As String, LArray_T2() As String, P As String, i As Integer
         'Dim rngVar As Excel.Range
         V = "" : P = ""
@@ -1193,7 +1218,7 @@ Public Class XCX2
         Next i
 
         'For Each rngVar In xlCustomVarSheet.Range(xlCustomVarSheet.Range("B3").Offset(1, 0), xlCustomVarSheet.Range("B3").End(Excel.XlDirection.xlDown))
-        '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) Or V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
+        '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) orelse V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
         '        P = rngVar.Text
         '        Exit For
         '    End If
@@ -1218,7 +1243,7 @@ Public Class XCX2
     End Sub
 
     ' modbus var
-    Private Function hasValidM_Var(ByVal inputString As String) As Boolean 'Modbus var, moified in ver 5.0
+    Private Function hasValidM_Var(inputString As String) As Boolean 'Modbus var, moified in ver 5.0
         hasValidM_Var = False
         If M_VarListNotEmpty() Then
             Dim LArray_T2() As String, V As String, i As Integer
@@ -1233,12 +1258,12 @@ Public Class XCX2
             If V <> "" Then
                 'Dim rngVar As Excel.Range
                 'For Each rngVar In xlModbusVarSheet.Range(xlModbusVarSheet.Range("B3").Offset(1, 0), xlModbusVarSheet.Range("B3").End(Excel.XlDirection.xlDown))
-                '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) Or V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
+                '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) orelse V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
                 '        hasValidM_Var = True
                 '        Exit Function
                 '    End If
                 'Next rngVar
-                If ModbusVarDictionary.ContainsKey(V) Or ModbusVarDictionary.ContainsValue(V) Then
+                If ModbusVarDictionary.ContainsKey(V) OrElse ModbusVarDictionary.ContainsValue(V) Then
                     hasValidM_Var = True
                 End If
             End If
@@ -1272,7 +1297,7 @@ Public Class XCX2
         Next i
 
         'For Each rngVar In xlModbusVarSheet.Range(xlModbusVarSheet.Range("B3").Offset(1, 0), xlModbusVarSheet.Range("B3").End(Excel.XlDirection.xlDown))
-        '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) Or V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
+        '    If V = Strings.Trim(Strings.LCase(rngVar.Text)) orelse V = Strings.Trim(Strings.LCase(rngVar.Offset(0, 1).Text)) Then
         '        P = rngVar.Text
         '        Exit For
         '    End If
@@ -1297,7 +1322,7 @@ Public Class XCX2
     End Sub
 
     ' grabbers core 1
-    Private Function GrabIOEXPDirect(ByVal inputString As String, ByVal thisRCU As String, ByVal thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
+    Private Function GrabIOEXPDirect(inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
         Dim ioString As String, LArray() As String, ioName As String, L As Integer
         Dim vGrabIOEXPDirect As New List(Of String)
 
@@ -1313,21 +1338,21 @@ Public Class XCX2
         If Strings.InStr(inputString, "read") = (Strings.InStr(inputString, ".") + 1) Then
             If Strings.InStr(inputString, " relay") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=4 $len=2")
-            ElseIf Strings.InStr(inputString, " aout8") > 9 Or Strings.InStr(inputString, " analog8") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout8") > 9 OrElse Strings.InStr(inputString, " analog8") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=43 $len=2")
-            ElseIf Strings.InStr(inputString, " aout7") > 9 Or Strings.InStr(inputString, " analog7") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout7") > 9 OrElse Strings.InStr(inputString, " analog7") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=39 $len=2")
-            ElseIf Strings.InStr(inputString, " aout6") > 9 Or Strings.InStr(inputString, " analog6") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout6") > 9 OrElse Strings.InStr(inputString, " analog6") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=35 $len=2")
-            ElseIf Strings.InStr(inputString, " aout5") > 9 Or Strings.InStr(inputString, " analog5") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout5") > 9 OrElse Strings.InStr(inputString, " analog5") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=31 $len=2")
-            ElseIf Strings.InStr(inputString, " aout4") > 9 Or Strings.InStr(inputString, " analog4") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout4") > 9 OrElse Strings.InStr(inputString, " analog4") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=27 $len=2")
-            ElseIf Strings.InStr(inputString, " aout3") > 9 Or Strings.InStr(inputString, " analog3") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout3") > 9 OrElse Strings.InStr(inputString, " analog3") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=23 $len=2")
-            ElseIf Strings.InStr(inputString, " aout2") > 9 Or Strings.InStr(inputString, " analog2") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout2") > 9 OrElse Strings.InStr(inputString, " analog2") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=19 $len=2")
-            ElseIf Strings.InStr(inputString, " aout") > 9 Or Strings.InStr(inputString, " analog") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout") > 9 OrElse Strings.InStr(inputString, " analog") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=15 $len=2")
             ElseIf Strings.InStr(inputString, " input") > 9 Then
                 vGrabIOEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=3 $len=2")
@@ -1351,9 +1376,9 @@ Public Class XCX2
                 vGrabIOEXPDirect.Add("load $var=" & ioName)
 
                 For L = LBound(LArray) + 1 To UBound(LArray)
-                    If (LArray(L) = "set" Or LArray(L) = "or") AndAlso X0.Grab_value_0(inputString, L) <> "NULL" Then
+                    If (LArray(L) = "set" OrElse LArray(L) = "or") AndAlso X0.Grab_value_0(inputString, L) <> "NULL" Then
                         vGrabIOEXPDirect.Add("math.or $" & X0.Grab_value_0(inputString, L))
-                    ElseIf (LArray(L) = "unset" Or LArray(L) = "and") AndAlso X0.Grab_value_0(inputString, L) <> "NULL" Then
+                    ElseIf (LArray(L) = "unset" OrElse LArray(L) = "and") AndAlso X0.Grab_value_0(inputString, L) <> "NULL" Then
                         vGrabIOEXPDirect.Add("math.and $" & X0.Grab_value_0(inputString, L))
                     ElseIf (LArray(L) = "xor") AndAlso X0.Grab_value_0(inputString, L) <> "NULL" Then
                         vGrabIOEXPDirect.Add("math.xor $" & X0.Grab_value_0(inputString, L))
@@ -1372,7 +1397,7 @@ Public Class XCX2
         GrabIOEXPDirect = vGrabIOEXPDirect
     End Function
 
-    Private Function GrabIODEXPDirect(ByVal inputString As String, ByVal thisRCU As String, ByVal thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
+    Private Function GrabIODEXPDirect(inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
         Dim ioName As String
         Dim vGrabIODEXPDirect As New List(Of String)
 
@@ -1384,21 +1409,21 @@ Public Class XCX2
         End If
 
         If Strings.InStr(inputString, "read") = (Strings.InStr(inputString, ".") + 1) Then
-            If Strings.InStr(inputString, " aout8") > 9 Or Strings.InStr(inputString, " analog8") > 9 Or Strings.InStr(inputString, " ch8") > 9 Then
+            If Strings.InStr(inputString, " aout8") > 9 OrElse Strings.InStr(inputString, " analog8") > 9 OrElse Strings.InStr(inputString, " ch8") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=34 $len=2")
-            ElseIf Strings.InStr(inputString, " aout7") > 9 Or Strings.InStr(inputString, " analog7") > 9 Or Strings.InStr(inputString, " ch7") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout7") > 9 OrElse Strings.InStr(inputString, " analog7") > 9 OrElse Strings.InStr(inputString, " ch7") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=30 $len=2")
-            ElseIf Strings.InStr(inputString, " aout6") > 9 Or Strings.InStr(inputString, " analog6") > 9 Or Strings.InStr(inputString, " ch6") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout6") > 9 OrElse Strings.InStr(inputString, " analog6") > 9 OrElse Strings.InStr(inputString, " ch6") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=26 $len=2")
-            ElseIf Strings.InStr(inputString, " aout5") > 9 Or Strings.InStr(inputString, " analog5") > 9 Or Strings.InStr(inputString, " ch5") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout5") > 9 OrElse Strings.InStr(inputString, " analog5") > 9 OrElse Strings.InStr(inputString, " ch5") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=22 $len=2")
-            ElseIf Strings.InStr(inputString, " aout4") > 9 Or Strings.InStr(inputString, " analog4") > 9 Or Strings.InStr(inputString, " ch4") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout4") > 9 OrElse Strings.InStr(inputString, " analog4") > 9 OrElse Strings.InStr(inputString, " ch4") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=18 $len=2")
-            ElseIf Strings.InStr(inputString, " aout3") > 9 Or Strings.InStr(inputString, " analog3") > 9 Or Strings.InStr(inputString, " ch3") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout3") > 9 OrElse Strings.InStr(inputString, " analog3") > 9 OrElse Strings.InStr(inputString, " ch3") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=14 $len=2")
-            ElseIf Strings.InStr(inputString, " aout2") > 9 Or Strings.InStr(inputString, " analog2") > 9 Or Strings.InStr(inputString, " ch2") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout2") > 9 OrElse Strings.InStr(inputString, " analog2") > 9 OrElse Strings.InStr(inputString, " ch2") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=10 $len=2")
-            ElseIf Strings.InStr(inputString, " aout") > 9 Or Strings.InStr(inputString, " analog") > 9 Or Strings.InStr(inputString, " ch") > 9 Then
+            ElseIf Strings.InStr(inputString, " aout") > 9 OrElse Strings.InStr(inputString, " analog") > 9 OrElse Strings.InStr(inputString, " ch") > 9 Then
                 vGrabIODEXPDirect.Add("read.modbus $dev=" & ioName & " $reg=6 $len=2")
             Else
                 vGrabIODEXPDirect.Add("nop")
@@ -1412,7 +1437,7 @@ Public Class XCX2
         GrabIODEXPDirect = vGrabIODEXPDirect
     End Function
 
-    Private Function GrabRCUDirect(ByVal inputString As String) As List(Of String)
+    Private Function GrabRCUDirect(inputString As String) As List(Of String)
         Dim LArray() As String, LArray1() As String
         Dim L As Integer
         LArray = Strings.Split(Strings.Replace(inputString, "#", ""), " $")
@@ -1427,7 +1452,7 @@ Public Class XCX2
         GrabRCUDirect = vGrabRCUDirect
     End Function
 
-    Private Function GrabMathDirect(ByVal inputString As String, ByVal thisRCU As String, ByVal thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
+    Private Function GrabMathDirect(inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
 
         Dim LArray() As String, LArray1() As String
         Dim L As Integer
@@ -1448,7 +1473,7 @@ Public Class XCX2
         GrabMathDirect = vGrabMathDirect
     End Function
 
-    Private Function GrabSaveDirect(ByVal inputString As String) As List(Of String)
+    Private Function GrabSaveDirect(inputString As String) As List(Of String)
         Dim ioString As String, LArray() As String, LArray1() As String, ioLen As String
         Dim vGrabSaveDirect As New List(Of String)
 
@@ -1492,7 +1517,7 @@ Public Class XCX2
         GrabSaveDirect = vGrabSaveDirect
     End Function
 
-    Private Function GrabOtherVarDirect(ByVal inputString As String) As List(Of String)
+    Private Function GrabOtherVarDirect(inputString As String) As List(Of String)
         Dim LArray() As String, LArray1() As String
         Dim OtherVar As String, L As Integer, Smode As String
         Dim vGrabOtherVarDirect As New List(Of String)
@@ -1529,7 +1554,7 @@ Public Class XCX2
         GrabOtherVarDirect = vGrabOtherVarDirect
     End Function
 
-    Private Function GrabModbusDirect(ByVal inputString As String) As List(Of String)
+    Private Function GrabModbusDirect(inputString As String) As List(Of String)
         Dim len_check As String, val_check As String
         Dim vGrabModbusDirect As New List(Of String)
 
@@ -1548,7 +1573,7 @@ Public Class XCX2
         GrabModbusDirect = vGrabModbusDirect
     End Function
 
-    Private Function GrabDimmerDirect(ByVal inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
+    Private Function GrabDimmerDirect(inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
         Dim ioString As String, chString As String, LArray() As String, LArray1() As String, LArray2() As String, i As Integer
         Dim thisIOdev As String, thisChReg As Integer, ioLen As Integer
 
@@ -1625,7 +1650,7 @@ Public Class XCX2
         GrabDimmerDirect = vGrabDimmerDirect
     End Function
 
-    Private Function GrabDimmerReadDirect(ByVal inputString As String, ByVal thisRCU As String, ByVal thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
+    Private Function GrabDimmerReadDirect(inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
         Dim ioString As String, chString As String, LArray() As String, LArray1() As String, LArray2() As String
         Dim thisIOdev As String, thisChReg As Integer, ioLen As Integer, i As Integer
 
@@ -1690,18 +1715,27 @@ Public Class XCX2
         GrabDimmerReadDirect = vGrabDimmerReadDirect
     End Function
 
-    Private Function GrabDaliDirect(ByVal inputString As String, ByVal thisRCU As String, ByVal thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
+    Private Function GrabDaliDirect(inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
         Dim ioString As String, LArray1() As String, ioName As String, i As Integer
         Dim Dalibus As String, ioBlst As String, ioGp As String
         Dim idFactor As Integer, bgLum As String, bgID As String
+        Dim dtr As Integer, isQuery As Boolean, sceneNum As Integer, readReg As String
 
-        ioString = Strings.Replace(Strings.Replace(inputString, " ", ""), "#", "$")
-        ioString = Strings.Mid(ioString, 1, Strings.InStr(ioString, "$") - 1)
+        ioString = Strings.Replace(inputString, "#", "$")
+        If InStr(ioString, "$") > 4 Then
+            ioString = Mid(ioString, 1, InStr(ioString, "$") - 1) & " "
+        Else
+            ioString = ioString & " "
+        End If
+
         Dalibus = X0.Grab_variant(inputString, "bus")
         ioBlst = X0.Grab_variant(inputString, "ballast")
         ioGp = X0.Grab_variant(inputString, "group")
-        idFactor = 0
+        idFactor = 1
         bgLum = X0.Grab_value_5(inputString)
+        isQuery = False
+        Dalibus = "06"
+        readReg = "04"
 
         If Strings.Mid(inputString, Strings.InStr(inputString, "dali") + 4, 1) = "." Then
             ioName = "dali1"
@@ -1712,56 +1746,232 @@ Public Class XCX2
         If Dalibus <> "NULL" AndAlso IsNumeric(Dalibus) Then
             If CInt(Dalibus) = 2 Then
                 Dalibus = "05"
-            Else
-                Dalibus = "06"
+                readReg = "03"
             End If
-        Else
-            Dalibus = "06"
-        End If
-
-        If Strings.InStr(ioString, ".up") > 0 Or Strings.InStr(ioString, ".on") > 0 Then
-            idFactor = 1
-            bgLum = "05"
-        ElseIf Strings.InStr(ioString, ".down") > 0 Or Strings.InStr(ioString, ".off") > 0 Then
-            idFactor = 1
-            bgLum = "00"
-        ElseIf Strings.InStr(ioString, ".stop") > 0 Then
-            idFactor = 0
-            bgLum = "FF"
-        Else
-            idFactor = 0
-            bgLum = X0.Grab_value_5(inputString)
         End If
 
         Dim vGrabDaliDirect As New List(Of String)
 
+        If InStr(ioString, ".read ") > 0 Then
+            isQuery = True
 
-        If ioBlst <> "NULL" Or ioGp <> "NULL" Then
+            Select Case True
+                Case InStr(inputString & " ", " arc ") > 0
+                    bgLum = "A0"
+                Case InStr(inputString & " ", " status ") > 0
+                    bgLum = "90"
+                Case InStr(inputString & " ", " ispresent ") > 0
+                    bgLum = "91"
+                Case InStr(inputString & " ", " isfail ") > 0
+                    bgLum = "92"
+                Case InStr(inputString & " ", " ison ") > 0
+                    bgLum = "93"
+                Case InStr(inputString & " ", " dtr ") > 0, InStr(inputString & " ", " dtr0 ") > 0
+                    bgLum = "98"
+                Case InStr(inputString & " ", " dtr1 ") > 0
+                    bgLum = "9C"
+                Case InStr(inputString & " ", " dtr2 ") > 0
+                    bgLum = "9D"
+                Case Else
+                    bgLum = "A0"
+            End Select
+
+        ElseIf InStr(ioString, ".dtr") > 0 Then
+            dtr = X0.GetIndexFromBase(ioString, ".dtr")
+            If dtr >= 0 AndAlso dtr <= 2 Then
+                'attempt to load value to dtr0, dtr1 or dtr2
+                If dtr = 1 Then
+                    bgID = "C3"
+                ElseIf dtr = 2 Then
+                    bgID = "C5"
+                Else
+                    bgID = "A3"
+                End If
+
+                If InStr(inputString, "$hex=") > 0 OrElse InStr(inputString, "$dec=") > 0 OrElse InStr(inputString, "$lum=") > 0 Then
+                    bgLum = X0.Grab_value_7(inputString)
+                    vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & bgID & bgLum)
+                    GrabDaliDirect = vGrabDaliDirect
+                    Exit Function
+                ElseIf dtr = 0 AndAlso InStr(inputString, " from ") > 0 Then
+                    'special case to dtr0 from other things
+                    If InStr(inputString & " ", " arc ") > 0 Then
+                        'load dtr0 from arc
+                        bgLum = "21"
+                    Else
+                        ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                        vGrabDaliDirect.Add("nop")
+                        GrabDaliDirect = vGrabDaliDirect
+                        Exit Function
+                    End If
+                Else
+                    ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                    vGrabDaliDirect.Add("nop")
+                    GrabDaliDirect = vGrabDaliDirect
+                    Exit Function
+                End If
+
+            Else
+                ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                vGrabDaliDirect.Add("nop")
+                GrabDaliDirect = vGrabDaliDirect
+                Exit Function
+            End If
+
+        ElseIf InStr(ioString, ".scene") > 0 Then
+            sceneNum = X0.GetIndexFromBase(ioString, ".scene")
+
+            If sceneNum >= 0 AndAlso sceneNum <= 15 Then
+                If InStr(inputString, " from ") > 0 Then
+                    'set scene x from dtr 0
+                    If InStr(inputString & " ", " dtr ") > 0 OrElse InStr(inputString & " ", " dtr0 ") > 0 Then
+                        bgLum = xlWorkFunc.Dec2Hex(64 + sceneNum, 2)
+                    Else
+                        ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                        vGrabDaliDirect.Add("nop")
+                        GrabDaliDirect = vGrabDaliDirect
+                        Exit Function
+                    End If
+                Else
+                    'set specific scene to ballast, group or broadcast
+                    bgLum = xlWorkFunc.Dec2Hex(16 + sceneNum, 2)
+                End If
+            Else
+                ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                vGrabDaliDirect.Add("nop")
+                GrabDaliDirect = vGrabDaliDirect
+                Exit Function
+            End If
+
+        ElseIf InStr(inputString, " from ") > 0 Then
+            'set other things from dtr0
+            Select Case True
+                Case InStr(ioString, ".max ") > 0
+                    bgLum = "2A"
+                Case InStr(ioString, ".min ") > 0
+                    bgLum = "2B"
+                Case InStr(ioString, ".fail ") > 0
+                    bgLum = "2C"
+                Case InStr(ioString, ".power ") > 0, InStr(ioString, ".poweron ") > 0
+                    bgLum = "2D"
+                Case InStr(ioString, ".fadetime ") > 0
+                    bgLum = "2E"
+                Case InStr(ioString, ".faderate ") > 0
+                    bgLum = "2F"
+                Case Else
+                    bgLum = "2A"
+            End Select
+        Else
+            Select Case True
+                Case InStr(ioString, ".on ") > 0, InStr(ioString, ".max ") > 0
+                    bgLum = "05"
+                Case InStr(ioString, ".off ") > 0
+                    bgLum = "00"
+                Case InStr(ioString, ".ramp ") > 0
+                    idFactor = 0
+                    bgLum = X0.Grab_value_5(inputString)
+                Case InStr(ioString, ".stop ") > 0
+                    idFactor = 0
+                    bgLum = "FF"
+                Case InStr(ioString, ".min ") > 0
+                    bgLum = "06"
+                Case InStr(ioString, ".up ") > 0
+                    bgLum = "01"
+                Case InStr(ioString, ".down ") > 0
+                    bgLum = "02"
+                Case InStr(ioString, ".stepup ") > 0
+                    bgLum = "03"
+                Case InStr(ioString, ".stepdown ") > 0
+                    bgLum = "04"
+                Case InStr(ioString, ".downoff ") > 0
+                    bgLum = "07"
+                Case InStr(ioString, ".onup ") > 0
+                    bgLum = "08"
+                Case Else
+                    'taken as ramp same as instr(iostring, ".ramp") > 0
+                    idFactor = 0
+                    bgLum = X0.Grab_value_5(inputString)
+            End Select
+        End If
+
+
+        If ioBlst <> "NULL" OrElse ioGp <> "NULL" Then
             If ioBlst <> "NULL" Then
+
                 ioBlst = X0.CommaExpand(ioBlst, 0, 63)
                 LArray1 = Strings.Split(ioBlst, ",")
-                For i = LBound(LArray1) To UBound(LArray1)
-                    If IsNumeric(LArray1(i)) Then
-                        If CInt(LArray1(i)) > -1 AndAlso CInt(LArray1(i)) < 64 Then
 
-                            bgID = xlWorkFunc.Dec2Hex(CInt(LArray1(i)) * 2 + idFactor, 2)
-                            vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & bgID & bgLum)
+                If Not isQuery Then
+                    For i = LBound(LArray1) To UBound(LArray1)
+                        If IsNumeric(LArray1(i)) Then
+                            If CInt(LArray1(i)) > -1 AndAlso CInt(LArray1(i)) < 64 Then
+
+                                bgID = xlWorkFunc.Dec2Hex(CInt(LArray1(i)) * 2 + idFactor, 2)
+                                vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & bgID & bgLum)
+                            End If
                         End If
+                    Next i
+
+                Else
+                    'is query one one ballast allowed to query from
+                    If (UBound(LArray1) - LBound(LArray1) + 1) = 1 Then
+                        bgID = xlWorkFunc.Dec2Hex(CInt(LArray1(0)) * 2 + idFactor, 2)
+                        vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & bgID & bgLum)
+                        vGrabDaliDirect.Add("wait $sec=0.005")
+                        vGrabDaliDirect.Add("read.modbus $dev=" & ioName & " $reg=" & readReg)
+                        GrabDaliDirect = vGrabDaliDirect
+                        Exit Function
+                    Else
+                        ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                        vGrabDaliDirect.Add("nop")
+                        GrabDaliDirect = vGrabDaliDirect
+                        Exit Function
                     End If
-                Next i
+                End If
+
+
             End If
 
             If ioGp <> "NULL" Then
                 ioGp = X0.CommaExpand(ioGp, 0, 15)
                 LArray1 = Strings.Split(ioGp, ",")
-                For i = LBound(LArray1) To UBound(LArray1)
-                    If IsNumeric(LArray1(i)) Then
-                        If CInt(LArray1(i)) > -1 AndAlso CInt(LArray1(i)) < 16 Then
-                            bgID = xlWorkFunc.Dec2Hex(CInt(LArray1(i)) * 2 + idFactor + 128, 2)
-                            vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & bgID & bgLum)
+
+                If Not isQuery Then
+                    For i = LBound(LArray1) To UBound(LArray1)
+                        If IsNumeric(LArray1(i)) Then
+                            If CInt(LArray1(i)) > -1 AndAlso CInt(LArray1(i)) < 16 Then
+                                bgID = xlWorkFunc.Dec2Hex(CInt(LArray1(i)) * 2 + idFactor + 128, 2)
+                                vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & bgID & bgLum)
+                            End If
                         End If
+                    Next i
+                Else
+                    'is query one one ballast allowed to query from
+                    If (UBound(LArray1) - LBound(LArray1) + 1) = 1 Then
+                        bgID = xlWorkFunc.Dec2Hex(CInt(LArray1(0)) * 2 + idFactor + 128, 2)
+                        vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & bgID & bgLum)
+                        vGrabDaliDirect.Add("wait $sec=0.005")
+                        vGrabDaliDirect.Add("read.modbus $dev=" & ioName & " $reg=" & readReg)
+                        GrabDaliDirect = vGrabDaliDirect
+                        Exit Function
+                    Else
+                        ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                        vGrabDaliDirect.Add("nop")
+                        GrabDaliDirect = vGrabDaliDirect
+                        Exit Function
                     End If
-                Next i
+                End If
+
+            End If
+
+        ElseIf ioBlst = "NULL" AndAlso ioGp = "NULL" Then
+            'can be broadcast
+            If Not isQuery Then
+                vGrabDaliDirect.Add("send.modbus $dev=" & ioName & " $reg=" & Dalibus & " $hex=" & "FF" & bgLum)
+            Else
+                'query cannot be broadcast
+                ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
+                vGrabDaliDirect.Add("nop")
             End If
         Else
             ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "[RCU" & thisRCU & " | XCODE" & thisRCU & " | line " & thisLine & " | " & inputString & "][Invalid DALI instruction]")
@@ -1771,7 +1981,7 @@ Public Class XCX2
         GrabDaliDirect = vGrabDaliDirect
     End Function
 
-    Private Function GrabDMXDirect(ByVal inputString As String, ByVal thisRCU As String, ByVal thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
+    Private Function GrabDMXDirect(inputString As String, thisRCU As String, thisLine As String, ByRef ErrorWarnLog As String()) As List(Of String)
         Dim ioChString As String, ioChExp As String, LArray1() As String, i As Integer
 
         ioChString = X0.Grab_variant(inputString, "ch")
@@ -1802,7 +2012,7 @@ Public Class XCX2
 
     'inteligent Device Grabber
     'main function
-    Private Function Grab_Dev_1(ByVal inputString As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As String
+    Private Function Grab_Dev_1(inputString As String, thisRCU As String, ByRef ErrorWarnLog As String()) As String
         Dim P As Integer, i As Integer
         Dim LArray_T1() As String
         Dim LArray_GP() As String
@@ -1816,9 +2026,9 @@ Public Class XCX2
                     If CInt(LArray_GP(1)) > 0 AndAlso CInt(LArray_GP(1)) < (getDevLimit() - 2) Then ' 21 Then flexible dev
                         P = CInt(LArray_GP(1))
                     End If
-                ElseIf (LArray_GP(1) = "server" Or LArray_GP(1) = "db" Or LArray_GP(1) = "ff") Then
+                ElseIf (LArray_GP(1) = "server" OrElse LArray_GP(1) = "db" OrElse LArray_GP(1) = "ff") Then
                     P = 255
-                ElseIf (LArray_GP(1) = "last" Or LArray_GP(1) = "previous" Or LArray_GP(1) = "fe") Then
+                ElseIf (LArray_GP(1) = "last" OrElse LArray_GP(1) = "previous" OrElse LArray_GP(1) = "fe") Then
                     P = 254
                 ElseIf (Not IsNumeric(LArray_GP(1))) AndAlso LArray_GP(0) = "dev" Then
                     P = Grab_ID_from_Dev_Name(LArray_GP(1), thisRCU, ErrorWarnLog)
@@ -1829,7 +2039,7 @@ Public Class XCX2
         Grab_Dev_1 = xlWorkFunc.Dec2Hex(P, 2)
     End Function
 
-    Private Function Grab_ID_from_Dev_Name(ByVal inputString As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As Integer
+    Private Function Grab_ID_from_Dev_Name(inputString As String, thisRCU As String, ByRef ErrorWarnLog As String()) As Integer
         Grab_ID_from_Dev_Name = 0
         'checking device validity
         Dim RcuDevList() As String, RcuDevNameList() As String, RCUDevType As String
@@ -1854,7 +2064,7 @@ Public Class XCX2
             Dim ce As Excel.Range
             For Each ce In xlDeviceSheet.Range("C4:C" & getDevLimit())
                 If RCUDevType = "04" Then
-                    If (Strings.LCase(ce.Text) = "04" Or Strings.LCase(ce.Text) = "07") AndAlso Strings.Left(Strings.Replace(ce.Offset(0, -1).Text, " ", ""), 1) = Strings.Left(DevEnumID, 1) Then
+                    If (Strings.LCase(ce.Text) = "04" OrElse Strings.LCase(ce.Text) = "07") AndAlso Strings.Left(Strings.Replace(ce.Offset(0, -1).Text, " ", ""), 1) = Strings.Left(DevEnumID, 1) Then
                         Grab_ID_from_Dev_Name = ce.Row - 3
                         Exit Function
                     End If

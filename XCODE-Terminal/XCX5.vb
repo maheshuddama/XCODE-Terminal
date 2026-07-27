@@ -2,7 +2,7 @@
 
 Public Class XCX5
 
-    Function set_C_Scheme_2(ByVal thisConfigLine As String) As Integer
+    Function set_C_Scheme_2(thisConfigLine As String) As Integer
         Dim XCODEConfig As String, XConfigArr() As String
         set_C_Scheme_2 = 0
         XCODEConfig = Strings.LCase(Strings.Trim(thisConfigLine))
@@ -19,12 +19,12 @@ Public Class XCX5
         End If
     End Function
 
-    Sub keyword_version(ByVal CC As Integer, ByRef inputRng As Excel.Range)
+    Sub keyword_version(CC As Integer, ByRef inputRng As Excel.Range)
         C_func_mains(CC, inputRng, 1, 7)
         C_func_hides(CC, inputRng, 8, Strings.Len(inputRng.Text))
     End Sub
 
-    Private Sub C_func_mains(ByVal CC As Integer, ByRef inputRng As Excel.Range, ByVal StartLocation As Integer, ByVal ofLength As Integer)
+    Private Sub C_func_mains(CC As Integer, ByRef inputRng As Excel.Range, StartLocation As Integer, ofLength As Integer)
         If CC = 2 Then
             With inputRng.Characters(Start:=StartLocation, Length:=ofLength).Font
                 .FontStyle = "Normal"
@@ -48,7 +48,7 @@ Public Class XCX5
         End If
     End Sub
 
-    Private Sub C_func_hides(ByVal CC As Integer, ByRef inputRng As Excel.Range, ByVal StartLocation As Integer, ByVal ofLength As Integer)
+    Private Sub C_func_hides(CC As Integer, ByRef inputRng As Excel.Range, StartLocation As Integer, ofLength As Integer)
         If CC = 2 Then
             With inputRng.Characters(Start:=StartLocation, Length:=ofLength).Font
                 .FontStyle = "Normal"

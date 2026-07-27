@@ -6,7 +6,7 @@ Module XT1
     Dim Compiling As Boolean
     Dim unAttended As Boolean
 
-    Sub Main(ByVal args As String())
+    Sub Main(args As String())
         Dim Input As String
         Dim xlPath = My.Computer.FileSystem.CurrentDirectory
         unAttended = False : Compiling = False
@@ -163,7 +163,7 @@ Module XT1
     End Sub
 
     ' find memmap
-    Private Function getFirstMemmap(ByVal thisPath As String) As String
+    Private Function getFirstMemmap(thisPath As String) As String
         Dim thisFileName As String
         getFirstMemmap = ""
         For Each foundfile As String In My.Computer.FileSystem.GetFiles(thisPath)

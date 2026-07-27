@@ -16,7 +16,7 @@ Public Class XCX1
     Dim X3 As New XCX3
     Dim X4 As New XCX4
 
-    Sub XCM(ByVal MemmapName As String, ByRef ErrorWarnLog As String(), Optional ByVal unAttended As Boolean = False)
+    Sub XCM(MemmapName As String, ByRef ErrorWarnLog As String(), Optional unAttended As Boolean = False)
         X0 = New XCX0(unAttended)
         startTime = X0.getTimeStamp
         eMsg = ""
@@ -48,14 +48,14 @@ Public Class XCX1
         Console.WriteLine() 'finally move to a new line
     End Sub
 
-    Private Function CreateWorkbook(ByVal MemmapName As String, ByRef ErrorWarnLog As String()) As Boolean
+    Private Function CreateWorkbook(MemmapName As String, ByRef ErrorWarnLog As String()) As Boolean
         CreateWorkbook = False
 
         xlPath = My.Computer.FileSystem.CurrentDirectory
 
         Console.Write("XC Progress:> Engaging Memmap file '" & MemmapName & "'...")
 
-        xlApp = New Microsoft.Office.Interop.Excel.Application()
+        xlApp = New Excel.Application()
 
         'try to open memmap
         Try
@@ -89,9 +89,9 @@ Public Class XCX1
         Next
     End Sub
 
-    Private Sub CreateErrorWarnReport(ByVal header As String, ByVal MemmapName As String, ByVal thisUser As String, ByVal thisStartTime As String, ByRef ErrorWarnLog As String(), Optional ByVal Critical As Boolean = False)
+    Private Sub CreateErrorWarnReport(header As String, MemmapName As String, thisUser As String, thisStartTime As String, ByRef ErrorWarnLog As String(), Optional Critical As Boolean = False)
 
-        If Strings.Len(ErrorWarnLog(0)) > 5 Or Strings.Len(ErrorWarnLog(1)) > 5 Then
+        If Strings.Len(ErrorWarnLog(0)) > 5 OrElse Strings.Len(ErrorWarnLog(1)) > 5 Then
             'there's some error or warning to report.
             Dim fileh As System.IO.StreamWriter
             Dim errFile As String, endTime As String
@@ -136,7 +136,7 @@ Public Class XCX1
 
     End Sub
 
-    Private Sub UpdateReport(ByVal thisUser As String, ByVal thisVer As String, ByVal MemmapName As String)
+    Private Sub UpdateReport(thisUser As String, thisVer As String, MemmapName As String)
         Dim xlWorkSheet As Excel.Worksheet, XLogQuery As String
         Dim thisPath As String
 
@@ -155,7 +155,6 @@ Public Class XCX1
             xlWorkSheet = xlWorkBook.Sheets("ReportXlog")
             xlSheetList.Add("ReportXlog")
         End If
-        
 
         XLogQuery = X0.getLogAuth
         XLogQuery = XLogQuery & "?entry.84145384=" & thisUser & "&entry.1362894441=" & thisVer & "&entry.1003842767=" & MemmapName & "&entry.696172307=" & thisPath & "&fvv=1&partialResponse=%5Bnull%2Cnull%2C%228790538719799163109%22%5D&pageHistory=0&fbzx=8790538719799163109"
@@ -251,7 +250,7 @@ Public Class XCX1
 
     End Function
 
-   
+
     Private Sub removeBackups()
         Dim xlWorkSheet As Excel.Worksheet = Nothing
         'remove backup
@@ -269,7 +268,7 @@ Public Class XCX1
         xlApp.DisplayAlerts = True
     End Sub
 
-    Private Sub DumpResources(Optional ByVal unAttended As Boolean = False)
+    Private Sub DumpResources(Optional unAttended As Boolean = False)
         'release all objects in an error.
         Try
             If Not IsNothing(xlWorkBook) Then
@@ -303,7 +302,7 @@ Public Class XCX1
         End If
     End Sub
 
-    Private Sub CreateSolutions(ByVal MemmapName As String, ByRef ErrorWarnLog As String())
+    Private Sub CreateSolutions(MemmapName As String, ByRef ErrorWarnLog As String())
         Dim Notification As String, evalPath As Integer
         Dim Defined_Name As String, rcount As Integer, rfullcount As Integer
 
@@ -367,7 +366,7 @@ Public Class XCX1
 
     'solution write
 
-    Private Function getDefinedName(ByVal thisRCU As String) As String
+    Private Function getDefinedName(thisRCU As String) As String
         'Dim xlWorkSheet As Excel.Worksheet
         'Dim ce As Excel.Range, ThisTempLine As String
         'getDefinedName = "NULL"
@@ -398,7 +397,7 @@ Public Class XCX1
         End If
     End Function
 
-    Private Function DeviceXF(ByVal MemmapName As String, ByVal thisRCU As String, ByVal Def_Name As String) As String
+    Private Function DeviceXF(MemmapName As String, thisRCU As String, Def_Name As String) As String
         Dim xlWorkSheet As Excel.Worksheet
         Dim ce As Excel.Range, RCUName As String, thisName As String
         Dim withCBS As Boolean, CBSline As String, CBSint As Integer
@@ -464,7 +463,7 @@ Public Class XCX1
         DeviceXF = "Devices." & thisName & ".hex"
     End Function
 
-    Private Function ProgramXF(ByVal MemmapName As String, ByVal thisRCU As String, ByVal Def_Name As String) As String
+    Private Function ProgramXF(MemmapName As String, thisRCU As String, Def_Name As String) As String
         Dim xlWorkSheet As Excel.Worksheet
         Dim ce As Excel.Range, RCUName As String, thisName As String
         Dim fileh As System.IO.StreamWriter
@@ -496,11 +495,11 @@ Public Class XCX1
 
         releaseObject(fileh)
         releaseObject(xlWorkSheet)
-        
+
         ProgramXF = "Program." & thisName & ".hex"
     End Function
 
-    Private Function ParamsXF(ByVal MemmapName As String, ByVal thisRCU As String, ByVal Def_Name As String) As String
+    Private Function ParamsXF(MemmapName As String, thisRCU As String, Def_Name As String) As String
         Dim xlWorkSheet As Excel.Worksheet
         Dim ce As Excel.Range, RCUName As String, thisName As String
         Dim fileh As System.IO.StreamWriter

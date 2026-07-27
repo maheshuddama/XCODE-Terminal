@@ -12,8 +12,8 @@ Public Class XCX4
     Dim X0 As XCX0
     Dim X5 As New XCX5
 
-    Sub XCODE_Finalize(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction,
-                       ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean)
+    Sub XCODE_Finalize(thisUser As String, MemmapName As String, ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction,
+                       ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String), ByRef ErrorWarnLog As String(), unAttended As Boolean)
         xlWorkFunc = thisxlWorkFunc
         X0 = New XCX0(thisxlWorkFunc, unAttended)
 
@@ -83,7 +83,7 @@ Public Class XCX4
     End Sub
 
     'advancing the version for XCODE terminal this is unattended version update no user inputs
-    Private Sub Set_Version(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkbook As Excel.Workbook, ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String))
+    Private Sub Set_Version(thisUser As String, MemmapName As String, ByRef thisWorkbook As Excel.Workbook, ByRef xlSheetList As List(Of String), ByRef thisRCUList As List(Of String))
         '00 00 00 00 hex(XCODE version) 2Byte[bin7(year) bin4(month) bin5(day)] hex(build version)
         Dim buildVersion As Integer, tempVLine As String, vData() As String
         Dim firstRCU As String, XLogComment As String
@@ -100,7 +100,7 @@ Public Class XCX4
 
         XLogComment = "- Compiled using XC Terminal Ver-" & X0.getXCVer & "." & X0.getXCbuildVer 'fixed unattended comment
 
-        If (XLogComment = "test" Or XLogComment = "beta") AndAlso buildVersion > -1 Then 'can't skip first built
+        If (XLogComment = "test" OrElse XLogComment = "beta") AndAlso buildVersion > -1 Then 'can't skip first built
             X0.ConsoleMsg("XC Progress:> Versioning > Version " & buildVersion)
             increment_version(MemmapName, (buildVersion - 1), thisWorkbook, thisRCUList)
         Else
@@ -123,7 +123,7 @@ Public Class XCX4
 
     End Sub
 
-    Private Sub open_XLog(ByRef thisWorkbook As Excel.Workbook, ByRef xlSheetList As List(Of String), ByVal firstRCU As String)
+    Private Sub open_XLog(ByRef thisWorkbook As Excel.Workbook, ByRef xlSheetList As List(Of String), firstRCU As String)
         If Not X0.isSheetExist_From_List(xlSheetList, "XLog") Then
             thisWorkbook.Sheets.Add(Before:=thisWorkbook.Sheets("Device" & firstRCU)).Name = "XLog"
             xlSheetList.Add("XLog")
@@ -145,7 +145,7 @@ Public Class XCX4
         xlXLogSheet.Range("B2").Resize(1, 5).Value = New Object(,) {{"File", "Version", "User", "Date", "Change Log"}}
     End Sub
 
-    Private Sub write_XLog(ByVal thisUser As String, ByVal MemmapName As String, ByRef thisWorkbook As Excel.Workbook, ByVal PreVersion As Integer, ByVal thisComment As String)
+    Private Sub write_XLog(thisUser As String, MemmapName As String, ByRef thisWorkbook As Excel.Workbook, PreVersion As Integer, thisComment As String)
         xlXLogSheet = thisWorkbook.Sheets("XLog")
         'B3 is the fixed origin row = 3 
 
@@ -197,13 +197,13 @@ Public Class XCX4
         xlXLogSheet.Protect(Password:="1234XCODE5")
     End Sub
 
-    Private Sub Push_XLog_Down(ByRef thisWorkbook As Excel.Workbook, ByVal newLine As Integer)
+    Private Sub Push_XLog_Down(ByRef thisWorkbook As Excel.Workbook, newLine As Integer)
         xlXLogSheet = thisWorkbook.Sheets("XLog")
         Dim newRow As Excel.Range = xlXLogSheet.Rows(newLine)
         newRow.Insert()
     End Sub
 
-    Private Sub push_code_down(ByRef thisXCODESheet As Excel.Worksheet, ByVal inputText As String)
+    Private Sub push_code_down(ByRef thisXCODESheet As Excel.Worksheet, inputText As String)
         If Strings.Len(thisXCODESheet.ActiveCell.Offset(1, 0).Text) > 0 Then
             thisXCODESheet.CutCopyMode = False
             thisXCODESheet.ActiveCell.Offset(1, 1).Range("A1").Select()
@@ -219,7 +219,7 @@ Public Class XCX4
         End If
     End Sub
 
-    Private Sub increment_version(ByVal MemmapName As String, ByVal buildVersion As Integer, ByRef thisWorkbook As Excel.Workbook, ByRef thisRCUList As List(Of String))
+    Private Sub increment_version(MemmapName As String, buildVersion As Integer, ByRef thisWorkbook As Excel.Workbook, ByRef thisRCUList As List(Of String))
         Dim tempVLine As String
         Dim vLine As Integer, m As Integer
         Dim this_Color As Integer

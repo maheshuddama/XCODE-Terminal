@@ -9,11 +9,11 @@ Public Class XCX0
 
     'constructors
 
-    Public Sub New(Optional ByVal thisAttended As Boolean = False)
+    Public Sub New(Optional thisAttended As Boolean = False)
         unAttended = thisAttended
     End Sub
 
-    Public Sub New(ByRef ThisWorkFunc As Excel.WorksheetFunction, Optional ByVal thisAttended As Boolean = False)
+    Public Sub New(ByRef ThisWorkFunc As Excel.WorksheetFunction, Optional thisAttended As Boolean = False)
         xlWorkFunc = ThisWorkFunc
         unAttended = thisAttended
         updateVarDictionary()
@@ -34,18 +34,18 @@ Public Class XCX0
         If unAttended Then
             Console.WriteLine("XC-Terminal Ver(" & getXCVer() & "." & getXCbuildVer() & ")" & vbNewLine)
         Else
-            Dim logo As String = "" & vbNewLine & _
-         "    ██╗  ██╗ ██████╗" & vbNewLine & _
-         "    ╚██╗██╔╝██╔════╝" & vbNewLine & _
-         "     ╚███╔╝ ██║     " & vbNewLine & _
-         "     ██╔██╗ ██║     " & vbNewLine & _
-         "    ██╔╝ ██╗╚██████╗" & vbNewLine & _
+            Dim logo As String = "" & vbNewLine &
+         "    ██╗  ██╗ ██████╗" & vbNewLine &
+         "    ╚██╗██╔╝██╔════╝" & vbNewLine &
+         "     ╚███╔╝ ██║     " & vbNewLine &
+         "     ██╔██╗ ██║     " & vbNewLine &
+         "    ██╔╝ ██╗╚██████╗" & vbNewLine &
          "    ╚═╝  ╚═╝ ╚═════╝"
             Console.WriteLine(logo & vbNewLine & "     XC-Terminal Ver(" & getXCVer() & "." & getXCbuildVer() & ")" & vbNewLine)
         End If
     End Sub
 
-    Sub ConsoleProgress(ByVal StageDiscription As String, ByVal StageProgress As Double)
+    Sub ConsoleProgress(StageDiscription As String, StageProgress As Double)
         Dim progressBarWidth As Integer = 20
         If unAttended Then
             'ConsoleEraseThisLine()
@@ -56,7 +56,7 @@ Public Class XCX0
         End If
     End Sub
 
-    Sub ConsoleMsg(ByVal thisMessage As String, Optional ByVal Overwrite As Boolean = True)
+    Sub ConsoleMsg(thisMessage As String, Optional Overwrite As Boolean = True)
         If (Not unAttended) AndAlso Overwrite Then
             ConsoleEraseThisLine()
             Console.Write(thisMessage)
@@ -73,7 +73,7 @@ Public Class XCX0
         Console.SetCursorPosition(0, Console.CursorTop)
     End Sub
 
-    Function get_memmap_name_from_words(ByVal inputWords As String(), Optional ByVal index As Integer = 1) As String
+    Function get_memmap_name_from_words(inputWords As String(), Optional index As Integer = 1) As String
         Dim w As Integer
         get_memmap_name_from_words = inputWords(index)
 
@@ -222,7 +222,7 @@ Public Class XCX0
         End If
     End Function
 
-    'Function isSheetExist(ByRef thisWorkBook As Excel.Workbook, ByVal thisSheet As String) As Boolean
+    'Function isSheetExist(ByRef thisWorkBook As Excel.Workbook, thisSheet As String) As Boolean
     '    isSheetExist = False
 
     '    Dim xlSheet As Excel.Worksheet
@@ -236,26 +236,26 @@ Public Class XCX0
 
     'End Function
 
-    Function isSheetExist_From_List(ByRef xlSheetList As List(Of String), ByVal thisSheet As String) As Boolean
+    Function isSheetExist_From_List(ByRef xlSheetList As List(Of String), thisSheet As String) As Boolean
         isSheetExist_From_List = False
         If xlSheetList.Contains(thisSheet) Then
             isSheetExist_From_List = True
         End If
     End Function
 
-    'Function isSheetExist(ByRef thisWorkBook As Excel.Workbook, ByVal thisSheet As String) As Boolean
+    'Function isSheetExist(ByRef thisWorkBook As Excel.Workbook, thisSheet As String) As Boolean
     '    Return thisWorkBook.Worksheets.Cast(Of Excel.Worksheet)().Any(Function(sheet) sheet.Name = thisSheet)
     'End Function
 
-    Function isValidHexString(ByVal inputString As String) As Boolean
+    Function isValidHexString(inputString As String) As Boolean
         isValidHexString = Regex.IsMatch(inputString, "^[0-9A-Fa-f]+$")
     End Function
 
-    Function isValidBinString(ByVal inputString As String) As Boolean
+    Function isValidBinString(inputString As String) As Boolean
         isValidBinString = Regex.IsMatch(inputString, "^[01]+$")
     End Function
 
-    Function isValidInteger(ByVal inputString As String, Optional ByVal lowerLimit As Integer = 0) As Boolean
+    Function isValidInteger(inputString As String, Optional lowerLimit As Integer = 0) As Boolean
         isValidInteger = False
         If IsNumeric(inputString) Then
             If (CInt(inputString) = CDbl(inputString)) AndAlso CInt(inputString) >= lowerLimit Then
@@ -264,13 +264,13 @@ Public Class XCX0
         End If
     End Function
 
-    Function Evaluate(ByVal thisExpression As String) As Double
+    Function Evaluate(thisExpression As String) As Double
         Dim table As New DataTable()
         Dim result As Object = table.Compute(thisExpression, Nothing)
         Evaluate = Convert.ToDouble(result)
     End Function
 
-    Function getFilePathFormat(ByVal filePath As String) As Integer 'added in XCODE 4.9.2, detect if local path accessible
+    Function getFilePathFormat(filePath As String) As Integer 'added in XCODE 4.9.2, detect if local path accessible
         '0 other not accessible, 1 as local path, 2 as onedrive path,
         'removed letter c checking from path. in XCODE ver 5.2
         filePath = Strings.LCase(filePath)
@@ -289,7 +289,7 @@ Public Class XCX0
         End If
     End Function
 
-    Function getfilepath(ByVal filePath As String, Optional ByVal toLower As Boolean = True) As String 'added in XCODE 4.9.2, redirect to onedrive local path
+    Function getfilepath(filePath As String, Optional toLower As Boolean = True) As String 'added in XCODE 4.9.2, redirect to onedrive local path
         If toLower Then
             filePath = Strings.LCase(filePath)
         End If
@@ -303,7 +303,7 @@ Public Class XCX0
         End If
     End Function
 
-    Private Function isValidDate(ByVal inputString As String) As Boolean
+    Private Function isValidDate(inputString As String) As Boolean
         Dim DArr() As String, Y1 As Integer, M1 As Integer, D1 As Integer
         isValidDate = False
         If Strings.InStr(inputString, "/") > 2 Then
@@ -322,7 +322,7 @@ Public Class XCX0
         End If
     End Function
 
-    Private Function isValidTime(ByVal inputString As String) As Boolean
+    Private Function isValidTime(inputString As String) As Boolean
         Dim TArr() As String, H1 As Integer, M1 As Integer, S1 As Integer
         isValidTime = False
         If Strings.InStr(inputString, ":") > 2 Then
@@ -341,7 +341,7 @@ Public Class XCX0
         End If
     End Function
 
-    Function CommaExpand(ByVal inputString As String, ByVal lowerLimit As Integer, ByVal upperLimit As Integer) As String
+    Function CommaExpand(inputString As String, lowerLimit As Integer, upperLimit As Integer) As String
         Dim relayvalues() As String, rangeSplit() As String
         Dim Lrelay As Integer, Urelay As Integer, i As Integer, k As Integer
         Dim ArrExp(upperLimit - lowerLimit) As Integer
@@ -422,7 +422,16 @@ Public Class XCX0
 
     End Function
 
-    Private Function hexadder(ByVal hex1 As String, ByVal hex2 As String) As String
+    Function GetIndexFromBase(inputString As String, baseString As String) As Integer
+
+        Dim pos As Integer = inputString.IndexOf(baseString, StringComparison.OrdinalIgnoreCase)
+
+        Dim tail As String = inputString.Substring(pos + baseString.Length)
+
+        Return CInt(Val(tail))
+    End Function
+
+    Private Function hexadder(hex1 As String, hex2 As String) As String
         hexadder = Strings.Right("00" & Hex(CLng(xlWorkFunc.Hex2Dec(hex1)) + CLng(xlWorkFunc.Hex2Dec(hex2))), 2)
     End Function
 
@@ -431,7 +440,7 @@ Public Class XCX0
     '84 101 115 116
     'T e s t
 
-    Function encript(ByVal inputstring As String) As String
+    Function encript(inputstring As String) As String
         Dim i As Integer
         encript = ""
         For i = 1 To Strings.Len(inputstring)
@@ -439,7 +448,7 @@ Public Class XCX0
         Next i
     End Function
 
-    Function decript(ByVal encripted As String) As String
+    Function decript(encripted As String) As String
         Dim x As Integer
         decript = ""
         For x = 1 To Strings.Len(encripted) / 2
@@ -457,7 +466,7 @@ Public Class XCX0
     End Function
 
     'URL encode
-    Function URLEncode(ByVal StringToEncode As String, Optional ByVal PlusSpace As Boolean = True) As String
+    Function URLEncode(StringToEncode As String, Optional PlusSpace As Boolean = True) As String
         Dim TempAns As String = "", CurChr As Integer = 1
 
         Do Until CurChr - 1 = Len(StringToEncode)
@@ -482,11 +491,11 @@ Public Class XCX0
 
     'my version 
     Function getXCVer() As String
-        getXCVer = "5.6" 'major minor versions
+        getXCVer = "5.7" 'major minor versions
     End Function
 
     Function getXCbuildVer() As String
-        getXCbuildVer = "1" ' build version 
+        getXCbuildVer = "0" ' build version 
     End Function
 
     'utc functions
@@ -494,7 +503,7 @@ Public Class XCX0
         getTimeStamp = Format(Now, "yyMMdd-HHmmss")
     End Function
 
-    Function expandTimeStamp(ByVal thisTimeStamp As String) As String ' ver 5.0
+    Function expandTimeStamp(thisTimeStamp As String) As String ' ver 5.0
         Dim Months() As String, thisH As Integer, AMPM As String
         Months = Split("Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec", ",")
 
@@ -540,7 +549,7 @@ Public Class XCX0
 
 
     'error and warn apend
-    Function addErrorOrWarn(ByVal OriginalString As String, ByVal thisErrorOrWarn As String) As String
+    Function addErrorOrWarn(OriginalString As String, thisErrorOrWarn As String) As String
         If Strings.InStr(OriginalString & " ", thisErrorOrWarn & " ") = 0 Then
             addErrorOrWarn = OriginalString & vbNewLine & thisErrorOrWarn
         Else
@@ -549,7 +558,7 @@ Public Class XCX0
     End Function
 
     'file functions
-    Function isFileExist(ByVal Fpath As String) As Boolean
+    Function isFileExist(Fpath As String) As Boolean
         If System.IO.File.Exists(Fpath) Then
             isFileExist = True
         Else
@@ -557,7 +566,7 @@ Public Class XCX0
         End If
     End Function
 
-    Function IsFileInUse(ByVal FileName As String) As Boolean
+    Function IsFileInUse(FileName As String) As Boolean
         Try
             Using f As New IO.FileStream(FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
             End Using
@@ -567,7 +576,7 @@ Public Class XCX0
         Return False
     End Function
 
-    Function isAnExcelFile(ByVal FileName As String) As Boolean
+    Function isAnExcelFile(FileName As String) As Boolean
         If Strings.Right(Strings.LCase(FileName), 5) = ".xlsx" Then
             isAnExcelFile = True
         Else
@@ -577,7 +586,7 @@ Public Class XCX0
 
     'is IP
     'ip checker
-    Function isAValidIP(ByVal inputip As String) As Boolean
+    Function isAValidIP(inputip As String) As Boolean
         isAValidIP = False
         If Strings.InStr(inputip, ".") > 0 Then
 
@@ -588,7 +597,7 @@ Public Class XCX0
 
                 For L = LBound(LArray_ip) To UBound(LArray_ip)
                     If IsNumeric(LArray_ip(L)) Then
-                        If CInt(LArray_ip(L)) < 0 Or CInt(LArray_ip(L)) > 255 Then
+                        If CInt(LArray_ip(L)) < 0 OrElse CInt(LArray_ip(L)) > 255 Then
                             Exit Function
                         End If
                     Else
@@ -602,7 +611,7 @@ Public Class XCX0
     End Function
 
     'name version
-    Function getsufixname(ByVal MemmapName As String) As String
+    Function getsufixname(MemmapName As String) As String
         getsufixname = Strings.Replace(Strings.Replace(Strings.Replace(MemmapName, "RCU mem map.", ""), ".xlsx", ""), ".XLSX", "")
     End Function
 
@@ -639,7 +648,7 @@ Public Class XCX0
     Sub setFunctionSeparaters(ByRef thisProgramSheet As Excel.Worksheet)
         Dim ce As Excel.Range, i As Integer
         For Each ce In thisProgramSheet.Range(thisProgramSheet.Range("E5"), thisProgramSheet.Range("E5").End(Excel.XlDirection.xlDown))
-            If ce.Text = "04 01 00 00 00 00 00 00;" Or (Strings.Left(ce.Text, 5) = "01 01" AndAlso Strings.Mid(ce.Text, 7, 5) <> "00 00") Then
+            If ce.Text = "04 01 00 00 00 00 00 00;" OrElse (Strings.Left(ce.Text, 5) = "01 01" AndAlso Strings.Mid(ce.Text, 7, 5) <> "00 00") Then
                 For i = 0 To 5
                     With ce.Offset(0, i).Borders(Excel.XlBordersIndex.xlEdgeBottom)
                         .LineStyle = Excel.XlLineStyle.xlContinuous
@@ -665,7 +674,7 @@ Public Class XCX0
         End If
     End Sub
 
-    Sub Check_XCODE_format(ByVal MemmapName As String, ByRef thisXCODESheet As Excel.Worksheet, ByVal thisRCU As String)
+    Sub Check_XCODE_format(MemmapName As String, ByRef thisXCODESheet As Excel.Worksheet, thisRCU As String)
         Dim L As Integer, m As Integer, L1 As Integer, L2 As Integer, L3 As Integer, L4 As Integer, thisLine As String, V As Integer
         L = 0 : L1 = 1 : L2 = 1 : L3 = 1 : L4 = 1 : m = 1 : V = 0 'get first 2 lines
 
@@ -728,7 +737,7 @@ Public Class XCX0
 
             While k < 200 AndAlso L2 = 1
                 This_Line = Strings.LCase(Strings.Trim(thisXCODESheet.Range("C" & k).Text)) & " "
-                If Strings.InStr(This_Line, "exit ") = 1 Or Strings.InStr(This_Line, "goto ") = 1 Then
+                If Strings.InStr(This_Line, "exit ") = 1 OrElse Strings.InStr(This_Line, "goto ") = 1 Then
                     L1 = k
                 ElseIf Strings.InStr(This_Line, "function ") = 1 AndAlso L1 > 1 Then
                     L2 = k
@@ -749,7 +758,7 @@ Public Class XCX0
         End If
     End Sub
 
-    Private Sub Check_Version_Format(ByVal MemmapName As String, ByRef thisXCODESheet As Excel.Worksheet, vLine As Integer)
+    Private Sub Check_Version_Format(MemmapName As String, ByRef thisXCODESheet As Excel.Worksheet, vLine As Integer)
         Dim thisLine As String, vData() As String
         thisLine = Strings.Trim(Strings.LCase(thisXCODESheet.Range("C" & vLine).Text))
 
@@ -764,7 +773,7 @@ Public Class XCX0
 
     End Sub
 
-    Private Sub push_code_down(ByRef thisXCODESheet As Excel.Worksheet, ByVal inputText As String)
+    Private Sub push_code_down(ByRef thisXCODESheet As Excel.Worksheet, inputText As String)
         If Strings.Len(thisXCODESheet.ActiveCell.Offset(1, 0).Text) > 0 Then
             thisXCODESheet.CutCopyMode = False
             thisXCODESheet.ActiveCell.Offset(1, 1).Range("A1").Select()
@@ -782,7 +791,7 @@ Public Class XCX0
 
     'xcode core 1
     ' rcu var
-    Function hasValidVar(ByVal inputString As String) As Boolean 'RCU var
+    Function hasValidVar(inputString As String) As Boolean 'RCU var
         hasValidVar = False
         If Strings.InStr(Strings.LCase(inputString), " $var") > 1 Then
             'Dim RcuVariableList() As String, RcuNameList() As String
@@ -804,14 +813,14 @@ Public Class XCX0
                 '        Exit For
                 '    End If
                 'Next i
-                If RCUVarDictionary.ContainsKey(V) Or RCUVarDictionary.ContainsValue(V) Then
+                If RCUVarDictionary.ContainsKey(V) OrElse RCUVarDictionary.ContainsValue(V) Then
                     hasValidVar = True
                 End If
             End If
         End If
     End Function
 
-    Function Grab_Var_1(ByVal inputString As String) As String 'RCU var
+    Function Grab_Var_1(inputString As String) As String 'RCU var
         Dim V As String, LArray_T1() As String, P As String, i As Integer
         'Dim RcuVariableList() As String, RcuNameList() As String
         'RcuVariableList = Strings.Split("04,05,06,07,08,09,0A,0B,0C,0D,0E,0F,10,11,12,13,14,14,33,15,16,17,18,19,1A,1B,1C,1D,1E,1F,20,21,22,23,24,25,26,27", ",")
@@ -840,7 +849,7 @@ Public Class XCX0
     End Function
 
     ' is function 
-    Function isAFunction(ByVal inputString As String) As Boolean
+    Function isAFunction(inputString As String) As Boolean
         If Strings.InStr(inputString, "function ") = 1 Then
             isAFunction = True
         Else
@@ -848,13 +857,13 @@ Public Class XCX0
         End If
     End Function
 
-    Function getLineFromFunctionNameOtherRCU(ByVal inputString As String, ByVal inputLine As Integer, ByRef thisWorkbook As Excel.Workbook, ByVal otherRCU As String) As String
+    Function getLineFromFunctionNameOtherRCU(inputString As String, inputLine As Integer, ByRef thisWorkbook As Excel.Workbook, otherRCU As String) As String
         'Dim thisXlProgramSheet As Excel.Worksheet
         Dim thisXlFUNCTIONSheet As Excel.Worksheet
         Dim ce As Excel.Range
         getLineFromFunctionNameOtherRCU = "0000"
 
-        If inputString = "exit" Or inputString = "quit" Or inputString = "end" Then
+        If inputString = "exit" OrElse inputString = "quit" OrElse inputString = "end" Then
 
             'its useless to call exit line number in a another rcu
             'thisXlProgramSheet = thisWorkbook.Sheets("Program" & thisRCU)
@@ -901,8 +910,8 @@ Public Class XCX0
 
 
     'is other rcu header functions
-    Function isOtherRCUcall(ByVal inputString As String) As Boolean
-        If Strings.InStr(inputString, " @rcu") > 1 AndAlso (Strings.InStr(inputString, "run ") = 1 Or Strings.InStr(inputString, "reuse ") = 1) Then
+    Function isOtherRCUcall(inputString As String) As Boolean
+        If Strings.InStr(inputString, " @rcu") > 1 AndAlso (Strings.InStr(inputString, "run ") = 1 OrElse Strings.InStr(inputString, "reuse ") = 1) Then
             isOtherRCUcall = True
         Else
             isOtherRCUcall = False
@@ -910,9 +919,9 @@ Public Class XCX0
     End Function
 
     ' is ioexp direct
-    Function isAnIOEXPDirect(ByVal inputString As String) As Boolean
+    Function isAnIOEXPDirect(inputString As String) As Boolean
         inputString = Strings.Replace(inputString, " ", "")
-        If Strings.InStr(inputString, "ioexp") = 1 AndAlso (Strings.InStr(inputString, ".") = 6 Or Strings.InStr(inputString, ".") = 7 Or Strings.InStr(inputString, ".") = 8) Then
+        If Strings.InStr(inputString, "ioexp") = 1 AndAlso (Strings.InStr(inputString, ".") = 6 OrElse Strings.InStr(inputString, ".") = 7 OrElse Strings.InStr(inputString, ".") = 8) Then
             isAnIOEXPDirect = True
         Else
             isAnIOEXPDirect = False
@@ -920,9 +929,9 @@ Public Class XCX0
     End Function
 
     ' is iodexp direct
-    Function isAnIODEXPDirect(ByVal inputString As String) As Boolean
+    Function isAnIODEXPDirect(inputString As String) As Boolean
         inputString = Strings.Replace(inputString, " ", "")
-        If Strings.InStr(inputString, "iodexp") = 1 AndAlso (Strings.InStr(inputString, ".") = 7 Or Strings.InStr(inputString, ".") = 8) Then
+        If Strings.InStr(inputString, "iodexp") = 1 AndAlso (Strings.InStr(inputString, ".") = 7 OrElse Strings.InStr(inputString, ".") = 8) Then
             isAnIODEXPDirect = True
         Else
             isAnIODEXPDirect = False
@@ -930,11 +939,11 @@ Public Class XCX0
     End Function
 
     ' is rcu direct
-    Function isARCUDirect(ByVal inputString As String) As Boolean
+    Function isARCUDirect(inputString As String) As Boolean
         inputString = Strings.Replace(inputString, " ", "")
-        If Strings.InStr(inputString, "rcu.") = 1 AndAlso _
-        (Strings.InStr(inputString, ".set$relay=") > 0 Or Strings.InStr(inputString, ".or$relay=") > 0 Or _
-        Strings.InStr(inputString, ".unset$relay=") > 0 Or Strings.InStr(inputString, ".and$relay=") > 0 Or _
+        If Strings.InStr(inputString, "rcu.") = 1 AndAlso
+        (Strings.InStr(inputString, ".set$relay=") > 0 OrElse Strings.InStr(inputString, ".or$relay=") > 0 OrElse
+        Strings.InStr(inputString, ".unset$relay=") > 0 OrElse Strings.InStr(inputString, ".and$relay=") > 0 OrElse
         Strings.InStr(inputString, ".xor$relay=") > 0) Then
             isARCUDirect = True
         Else
@@ -943,7 +952,7 @@ Public Class XCX0
     End Function
 
     ' is math direct
-    Function isAMathDirect(ByVal inputString As String) As Boolean
+    Function isAMathDirect(inputString As String) As Boolean
         If Strings.InStr(Strings.Replace(inputString, " ", ""), "math.") = 1 Then
             isAMathDirect = True
         Else
@@ -952,7 +961,7 @@ Public Class XCX0
     End Function
 
     ' is save direct
-    Function isASaveDirect(ByVal inputString As String) As Boolean
+    Function isASaveDirect(inputString As String) As Boolean
         If Strings.InStr(Strings.Replace(inputString, " ", ""), "save") = 1 Then
             isASaveDirect = True
         Else
@@ -961,7 +970,7 @@ Public Class XCX0
     End Function
 
     'extend modbus direct
-    Function isAModbusDirect(ByVal inputString As String) As Boolean
+    Function isAModbusDirect(inputString As String) As Boolean
         If Strings.InStr(Strings.Replace(inputString, " ", ""), "send.mod") = 1 Then
             isAModbusDirect = True
         Else
@@ -970,7 +979,7 @@ Public Class XCX0
     End Function
 
     'expansion dimmer direct
-    Function isADimmerDirect(ByVal inputString As String) As Boolean
+    Function isADimmerDirect(inputString As String) As Boolean
         If Strings.InStr(Strings.Replace(inputString, " ", ""), "send.dim") = 1 Then
             isADimmerDirect = True
         Else
@@ -979,7 +988,7 @@ Public Class XCX0
     End Function
 
     ' dimmer read direct
-    Function isADimmerReadDirect(ByVal inputString As String) As Boolean
+    Function isADimmerReadDirect(inputString As String) As Boolean
         If Strings.InStr(Strings.Replace(inputString, " ", ""), "read.dim") = 1 Then
             isADimmerReadDirect = True
         Else
@@ -988,7 +997,7 @@ Public Class XCX0
     End Function
 
     ' dimmer load direct 
-    Function isADimmerLoad(ByVal inputString As String) As Boolean
+    Function isADimmerLoad(inputString As String) As Boolean
         If Strings.InStr(inputString, "load dimmer ") = 1 Then
             isADimmerLoad = True
         Else
@@ -996,12 +1005,12 @@ Public Class XCX0
         End If
     End Function
 
-    Function LoadDimmerConvert(ByVal inputString As String) As String
+    Function LoadDimmerConvert(inputString As String) As String
         LoadDimmerConvert = "10 80 01 01 " & Grab_value_2(inputString) & " " & Grab_Time_2(inputString) & ";"
     End Function
 
     'dali direct
-    Function isADaliDirect(ByVal inputString As String) As Boolean
+    Function isADaliDirect(inputString As String) As Boolean
         If Strings.InStr(Strings.Replace(inputString, " ", ""), "dali") = 1 Then
             isADaliDirect = True
         Else
@@ -1010,7 +1019,7 @@ Public Class XCX0
     End Function
 
     'dmx
-    Function isADMXDirect(ByVal inputString As String) As Boolean
+    Function isADMXDirect(inputString As String) As Boolean
         If Strings.InStr(Strings.Replace(inputString, " ", ""), "dmx.") = 1 Then
             isADMXDirect = True
         Else
@@ -1019,7 +1028,7 @@ Public Class XCX0
     End Function
 
     'definition header
-    Function isADefinition(ByVal inputString As String) As Boolean
+    Function isADefinition(inputString As String) As Boolean
         If Strings.InStr(inputString, "define ") = 1 Then
             isADefinition = True
         Else
@@ -1034,7 +1043,7 @@ Public Class XCX0
     'xcode core - 2
 
     ' has function call
-    Function hasAFunction(ByVal inputString As String) As Boolean
+    Function hasAFunction(inputString As String) As Boolean
         If Strings.InStr(inputString, " #") > 0 Then
             hasAFunction = True
         Else
@@ -1042,7 +1051,7 @@ Public Class XCX0
         End If
     End Function
 
-    Function isARCU(ByVal inputString As String) As Boolean
+    Function isARCU(inputString As String) As Boolean
         If Strings.InStr(inputString, "rcu.") = 1 Then
             isARCU = True
         Else
@@ -1051,7 +1060,7 @@ Public Class XCX0
     End Function
 
     'dmx
-    Function isADMX(ByVal inputString As String) As Boolean
+    Function isADMX(inputString As String) As Boolean
         If Strings.InStr(inputString, "dmx.") = 1 Then
             isADMX = True
         Else
@@ -1060,7 +1069,7 @@ Public Class XCX0
     End Function
 
     ' abs wait
-    Function isWaitABS(ByVal inputString As String) As Boolean   'XCODE 5.1 wait abs instruction check
+    Function isWaitABS(inputString As String) As Boolean   'XCODE 5.1 wait abs instruction check
         If Strings.InStr(inputString, "wait abs ") = 1 Then
             isWaitABS = True
         Else
@@ -1068,14 +1077,14 @@ Public Class XCX0
         End If
     End Function
 
-    Function WaitConvert(ByVal inputString As String) As String
+    Function WaitConvert(inputString As String) As String
         WaitConvert = "01 01 00 00 " & Grab_Time_1(inputString) & ";"
     End Function
 
     ' is an exit
     'exit handling
-    Function isAnExit(ByVal inputString As String) As Boolean
-        If Strings.InStr(inputString, "exit") = 1 Or Strings.InStr(inputString, "quit") = 1 Or Strings.InStr(inputString, "end") = 1 Then
+    Function isAnExit(inputString As String) As Boolean
+        If Strings.InStr(inputString, "exit") = 1 OrElse Strings.InStr(inputString, "quit") = 1 OrElse Strings.InStr(inputString, "end") = 1 Then
             isAnExit = True
         Else
             isAnExit = False
@@ -1087,7 +1096,7 @@ Public Class XCX0
     End Function
 
     'debug handling
-    Function isDebug(ByVal inputString As String) As Boolean
+    Function isDebug(inputString As String) As Boolean
         If Strings.InStr(inputString, "debug") = 1 Then
             isDebug = True
         Else
@@ -1100,7 +1109,7 @@ Public Class XCX0
     End Function
 
     'version handling
-    Function isVersion(ByVal inputString As String) As Boolean
+    Function isVersion(inputString As String) As Boolean
         If Strings.InStr(inputString, "version") = 1 Then
             isVersion = True
         Else
@@ -1108,7 +1117,7 @@ Public Class XCX0
         End If
     End Function
 
-    Function VersionConvert(ByVal inputString As String) As String
+    Function VersionConvert(inputString As String) As String
         Dim buildVersion As Integer, vData() As String
         vData = Strings.Split(Strings.Mid(inputString, Strings.InStr(inputString, "[") + 1, Strings.InStr(inputString, "]") - Strings.InStr(inputString, "[") - 1), ",")
         buildVersion = CInt(vData(1))
@@ -1116,7 +1125,7 @@ Public Class XCX0
     End Function
 
     ' load handling
-    Function isALoad(ByVal inputString As String) As Boolean
+    Function isALoad(inputString As String) As Boolean
         If Strings.InStr(inputString, "load ") = 1 Then
             isALoad = True
         Else
@@ -1125,7 +1134,7 @@ Public Class XCX0
     End Function
 
     ' is send
-    Function isASend(ByVal inputString As String) As Boolean
+    Function isASend(inputString As String) As Boolean
         If Strings.InStr(inputString, "send.") = 1 Then
             isASend = True
         Else
@@ -1134,7 +1143,7 @@ Public Class XCX0
     End Function
 
     'read handling
-    Function isARead(ByVal inputString As String) As Boolean
+    Function isARead(inputString As String) As Boolean
         If Strings.InStr(inputString, "read.") = 1 Then
             isARead = True
         Else
@@ -1143,7 +1152,7 @@ Public Class XCX0
     End Function
 
     'save handling
-    Function isASave(ByVal inputString As String) As Boolean
+    Function isASave(inputString As String) As Boolean
         If Strings.InStr(inputString, "save ") = 1 Then
             isASave = True
         Else
@@ -1152,7 +1161,7 @@ Public Class XCX0
     End Function
 
     ' math handling
-    Function isAMath(ByVal inputString As String) As Boolean
+    Function isAMath(inputString As String) As Boolean
         If Strings.InStr(inputString, "math.") = 1 Then
             isAMath = True
         Else
@@ -1161,7 +1170,7 @@ Public Class XCX0
     End Function
 
     'dimflow handling
-    Function isADimFlow(ByVal inputString As String) As Boolean
+    Function isADimFlow(inputString As String) As Boolean
         If Strings.InStr(inputString, "dimflow.") = 1 Then
             isADimFlow = True
         Else
@@ -1171,7 +1180,7 @@ Public Class XCX0
 
     ' grabbers
     ' end line worker functions
-    Function GrabHexString(ByVal inputString As String) As String
+    Function GrabHexString(inputString As String) As String
         Dim HTL1 As String
         HTL1 = Strings.Left(Strings.Replace(Strings.Trim(Strings.Replace(inputString, "0x", "")), " ", ""), 16)
         If isValidHexString(HTL1) Then
@@ -1181,7 +1190,7 @@ Public Class XCX0
         End If
     End Function
 
-    Function GrabComment(ByVal inputString As String) As String
+    Function GrabComment(inputString As String) As String
         If Strings.InStr(inputString, "//") Then
             Dim GC1 As String() = Strings.Split(inputString, "//")
             GrabComment = "//" & GC1(1)
@@ -1190,7 +1199,7 @@ Public Class XCX0
         End If
     End Function
 
-    Function GrabFunctionName(ByVal inputString As String) As String
+    Function GrabFunctionName(inputString As String) As String
         Dim LArray() As String
         LArray = Strings.Split(inputString, " ")
         GrabFunctionName = LArray(1)
@@ -1199,15 +1208,15 @@ Public Class XCX0
     'value grabbers
     'value for OR, relay wise
 
-    Function Grab_value_0(ByVal inputString As String, index As Integer) As String 'return indexed value otherwise null
+    Function Grab_value_0(inputString As String, index As Integer) As String 'return indexed value otherwise null
         Dim LArray_v1() As String, tempS As String, indexcount As Integer, i As Integer
         LArray_v1 = Strings.Split(Strings.Replace(inputString, "#", " $"), " $")
         indexcount = 0
         For i = LBound(LArray_v1) To UBound(LArray_v1)
             tempS = Strings.Replace(LArray_v1(i), " ", "")
-            If Strings.InStr(tempS, "bin=") = 1 Or Strings.InStr(tempS, "dec=") = 1 Or Strings.InStr(tempS, "hex=") = 1 _
-            Or Strings.InStr(tempS, "relay=") = 1 Or Strings.InStr(tempS, "bit=") = 1 Or Strings.InStr(tempS, "bin=") = 1 _
-            Or Strings.InStr(tempS, "fan=") = 1 Or Strings.InStr(tempS, "display=") = 1 Or Strings.InStr(tempS, "var=") Then
+            If Strings.InStr(tempS, "bin=") = 1 OrElse Strings.InStr(tempS, "dec=") = 1 OrElse Strings.InStr(tempS, "hex=") = 1 _
+            OrElse Strings.InStr(tempS, "relay=") = 1 OrElse Strings.InStr(tempS, "bit=") = 1 OrElse Strings.InStr(tempS, "bin=") = 1 _
+            OrElse Strings.InStr(tempS, "fan=") = 1 OrElse Strings.InStr(tempS, "display=") = 1 OrElse Strings.InStr(tempS, "var=") Then
                 Grab_value_0 = tempS
                 indexcount = indexcount + 1
                 If indexcount = index Then
@@ -1218,7 +1227,7 @@ Public Class XCX0
         Grab_value_0 = "NULL"
     End Function
 
-    Function Grab_value_1(ByVal inputString As String, ByVal Vmode As String) As String
+    Function Grab_value_1(inputString As String, Vmode As String) As String
         Dim P As String, Q As Long, R As String, t As Integer, i As Integer
         Dim LArray_v1() As String
         P = "" : Q = 0 : R = "" : t = 0
@@ -1408,8 +1417,33 @@ Public Class XCX0
         Grab_value_6 = "00"
     End Function
 
+    Function Grab_value_7(inputString As String) As String 'for dali dtr
+        Dim P As Double, R As Double, i As Integer
+        Dim LArray_v1() As String
+        P = 0
+        LArray_v1 = Strings.Split(Strings.Replace(inputString, "#", " $"), " $")
+        For i = LBound(LArray_v1) To UBound(LArray_v1)
+            If Strings.InStr(Strings.Replace(LArray_v1(i), " ", ""), "lum=") = 1 Then
+                P = GrabPara_Dbl(Strings.Replace(LArray_v1(i), "%", ""), "lum")
+                R = P * 254 / 100
+                Grab_value_7 = xlWorkFunc.Dec2Hex(R, 2)
+                Exit Function
+            ElseIf Strings.InStr(Strings.Replace(LArray_v1(i), " ", ""), "dec=") = 1 Then
+                P = GrabPara_Dbl(Strings.Replace(LArray_v1(i), "%", ""), "dec")
+                R = P
+                Grab_value_7 = xlWorkFunc.Dec2Hex(R, 2)
+                Exit Function
+            ElseIf Strings.InStr(Strings.Replace(LArray_v1(i), " ", ""), "hex=") = 1 Then
+                R = GrabPara_HEX(LArray_v1(i))
+                Grab_value_7 = Strings.Right(R, 2)
+                Exit Function
+            End If
+        Next i
+        Grab_value_7 = "00"
+    End Function
+
     'variant
-    Function Grab_variant(ByVal inputString As String, ByVal dataType As String) As String
+    Function Grab_variant(inputString As String, dataType As String) As String
         Dim LArray_v1() As String, i As Integer
         Grab_variant = "NULL"
         LArray_v1 = Strings.Split(Strings.Replace(Strings.Replace(Strings.LCase(inputString), "#", "$"), " ", ""), "$")
@@ -1426,7 +1460,7 @@ Public Class XCX0
     End Function
 
     'grab rcu num
-    Function Grab_RCU_Num(ByVal inputString As String) As String
+    Function Grab_RCU_Num(inputString As String) As String
         Dim LArray_v1() As String, i As Integer, RcuNum As String
         Grab_RCU_Num = "NULL"
 
@@ -1444,7 +1478,7 @@ Public Class XCX0
     End Function
 
     'grab ip
-    Function Grab_IP_addr(ByVal inputString As String) As String
+    Function Grab_IP_addr(inputString As String) As String
         Dim LArray_ip() As String, R As String, k As Integer
 
         LArray_ip = Strings.Split(Strings.Replace(inputString, " ", ""), ".")
@@ -1460,7 +1494,7 @@ Public Class XCX0
     ' grab var
     ' settings
     'added in v5.3 read write settings
-    Function Grab_Var_4(ByVal inputString As String) As String 'settings
+    Function Grab_Var_4(inputString As String) As String 'settings
         Dim V As String, LArray_T1() As String, i As Integer
 
         V = "00000000"
@@ -1483,7 +1517,7 @@ Public Class XCX0
     End Function
 
     ' grab elements
-    Function Grab_element(ByVal inputString As String) As String
+    Function Grab_element(inputString As String) As String
         Dim element As String
         element = Grab_variant(inputString, "element")
         If element = "NULL" Then
@@ -1495,7 +1529,7 @@ Public Class XCX0
     End Function
 
     'grab register
-    Function Grab_Reg_1(ByVal inputString As String) As String
+    Function Grab_Reg_1(inputString As String) As String
         Dim P As Integer, i As Integer
         Dim LArray_T1() As String
         Dim LArray_GP() As String
@@ -1519,7 +1553,7 @@ Public Class XCX0
     End Function
 
     ' grab dev type
-    Function Grab_Dev_Type_1(ByVal inputString As String) As String
+    Function Grab_Dev_Type_1(inputString As String) As String
         Dim P As Integer, i As Integer
         Dim LArray_T1() As String
         Dim LArray_GP() As String
@@ -1529,17 +1563,17 @@ Public Class XCX0
 
         For i = LBound(LArray_T1) To UBound(LArray_T1)
 
-            If Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "devtype=") Or Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "type=") Then
+            If Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "devtype=") OrElse Strings.InStr(Strings.Replace(LArray_T1(i), " ", ""), "type=") Then
                 LArray_GP = Strings.Split(Strings.Replace(LArray_T1(i), " ", ""), "=")
-                If IsNumeric(LArray_GP(1)) AndAlso (LArray_GP(0) = "devtype" Or LArray_GP(0) = "type") Then
+                If IsNumeric(LArray_GP(1)) AndAlso (LArray_GP(0) = "devtype" OrElse LArray_GP(0) = "type") Then
                     If CInt(LArray_GP(1)) > 0 AndAlso CInt(LArray_GP(1)) < 11 Then
                         P = CInt(LArray_GP(1))
                         Exit For
                     End If
-                ElseIf (LArray_GP(1) = "server" Or LArray_GP(1) = "db" Or LArray_GP(1) = "ff") AndAlso (LArray_GP(0) = "devtype" Or LArray_GP(0) = "type") Then
+                ElseIf (LArray_GP(1) = "server" OrElse LArray_GP(1) = "db" OrElse LArray_GP(1) = "ff") AndAlso (LArray_GP(0) = "devtype" OrElse LArray_GP(0) = "type") Then
                     P = 255
                     Exit For
-                ElseIf (Not IsNumeric(LArray_GP(1))) AndAlso (LArray_GP(0) = "devtype" Or LArray_GP(0) = "type") Then
+                ElseIf (Not IsNumeric(LArray_GP(1))) AndAlso (LArray_GP(0) = "devtype" OrElse LArray_GP(0) = "type") Then
                     P = Grab_Type_from_Name(LArray_GP(1))
                     Exit For
                 End If
@@ -1549,7 +1583,7 @@ Public Class XCX0
         Grab_Dev_Type_1 = xlWorkFunc.Dec2Hex(P, 2)
     End Function
 
-    Private Function Grab_Type_from_Name(ByVal inputString As String) As Integer
+    Private Function Grab_Type_from_Name(inputString As String) As Integer
         Dim RcuDevList() As String, RcuDevNameList() As String
 
         RcuDevList = Strings.Split("01,02,03,04,04,05,05,06,06,07,07,08,10", ",")
@@ -1570,8 +1604,8 @@ Public Class XCX0
     'Grab_Value_1 > retrun value input to functions
     'Grab_Dev_1 > return device for 03 03
 
-    Function hasTime(ByVal inputString As String) As Boolean
-        If Strings.InStr(inputString, " $hour") > 0 Or Strings.InStr(inputString, " $min") > 0 Or Strings.InStr(inputString, " $sec") > 0 Then
+    Function hasTime(inputString As String) As Boolean
+        If Strings.InStr(inputString, " $hour") > 0 OrElse Strings.InStr(inputString, " $min") > 0 OrElse Strings.InStr(inputString, " $sec") > 0 Then
             hasTime = True
         Else
             hasTime = False
@@ -1579,7 +1613,7 @@ Public Class XCX0
     End Function
 
     'time for run wait
-    Function Grab_Time_1(ByVal inputString As String) As String
+    Function Grab_Time_1(inputString As String) As String
         Dim P As Double, Q As Double, R As Double, t As Double, s As String
         Dim LArray_T1() As String, i As Integer
 
@@ -1603,7 +1637,7 @@ Public Class XCX0
     End Function
 
     'time for dimmer load
-    Private Function Grab_Time_2(ByVal inputString As String) As String
+    Private Function Grab_Time_2(inputString As String) As String
         Dim P As Double, Q As Double, R As Double, t As Double, s As String
         Dim LArray_T1() As String, i As Integer
 
@@ -1627,7 +1661,7 @@ Public Class XCX0
     End Function
 
     'time for RCU dimmer
-    Function Grab_Time_3(ByVal inputString As String) As String
+    Function Grab_Time_3(inputString As String) As String
         Dim P As Double, Q As Double, R As Double, t As Double, s As String
         Dim LArray_T1() As String, i As Integer
 
@@ -1685,7 +1719,7 @@ Public Class XCX0
         End If
     End Function
 
-    Private Function GrabPara_Lng(ByVal inputString As String, ByVal checkPara As String) As Long
+    Private Function GrabPara_Lng(inputString As String, checkPara As String) As Long
         Dim LArray_GP() As String
         LArray_GP = Strings.Split(Strings.Replace(inputString, " ", ""), "=")
         If IsNumeric(Evaluate(LArray_GP(1))) AndAlso LArray_GP(0) = checkPara Then
@@ -1699,7 +1733,7 @@ Public Class XCX0
         End If
     End Function
 
-    Private Function GrabPara_Int(ByVal inputString As String, ByVal checkPara As String) As Integer
+    Private Function GrabPara_Int(inputString As String, checkPara As String) As Integer
         Dim LArray_GP() As String
         LArray_GP = Strings.Split(Strings.Replace(inputString, " ", ""), "=")
         If IsNumeric(Evaluate(LArray_GP(1))) AndAlso LArray_GP(0) = checkPara Then
@@ -1713,7 +1747,7 @@ Public Class XCX0
         End If
     End Function
 
-    'Private Function GrabPara_BitPOS_OR(ByVal inputString As String, ByVal checkPara As String) As String
+    'Private Function GrabPara_BitPOS_OR(inputString As String, checkPara As String) As String
     '    Dim LArray_GP() As String, RelayBits() As String, i As Integer
     '    LArray_GP = Strings.Split(Strings.Replace(inputString, " ", ""), "=")
     '    RelayBits = Strings.Split("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0", ",")
@@ -1736,7 +1770,7 @@ Public Class XCX0
     '    Next i
     'End Function
 
-    'Private Function GrabPara_BitPOS_AND(ByVal inputString As String, ByVal checkPara As String) As String
+    'Private Function GrabPara_BitPOS_AND(inputString As String, checkPara As String) As String
     '    Dim LArray_GP() As String, RelayBits() As String, i As Integer
     '    LArray_GP = Strings.Split(Strings.Replace(inputString, " ", ""), "=")
     '    RelayBits = Strings.Split("1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1", ",")
@@ -1759,7 +1793,7 @@ Public Class XCX0
     '    Next i
     'End Function
 
-    Private Function GrabPara_BitPOS_OR(ByVal inputString As String, ByVal checkPara As String) As String
+    Private Function GrabPara_BitPOS_OR(inputString As String, checkPara As String) As String
         Dim LArray_GP() As String, i As Integer
         Dim stringBuilder As New System.Text.StringBuilder("00000000000000000000000000000000")
 
@@ -1781,7 +1815,7 @@ Public Class XCX0
         GrabPara_BitPOS_OR = stringBuilder.ToString
     End Function
 
-    Private Function GrabPara_BitPOS_AND(ByVal inputString As String, ByVal checkPara As String) As String
+    Private Function GrabPara_BitPOS_AND(inputString As String, checkPara As String) As String
         Dim LArray_GP() As String, i As Integer
         Dim stringBuilder As New System.Text.StringBuilder("11111111111111111111111111111111")
 
@@ -1804,7 +1838,7 @@ Public Class XCX0
     End Function
 
 
-    Private Function GrabPara_FAN(ByVal inputString As String) As String
+    Private Function GrabPara_FAN(inputString As String) As String
         Dim LArray_GP() As String
         LArray_GP = Strings.Split(Strings.Replace(inputString, " ", ""), "=")
         If LArray_GP(1) = "fan1" AndAlso LArray_GP(0) = "fan" Then
@@ -1813,18 +1847,18 @@ Public Class XCX0
             GrabPara_FAN = "003F0565"
         ElseIf LArray_GP(1) = "fan3" AndAlso LArray_GP(0) = "fan" Then
             GrabPara_FAN = "003F0556"
-        ElseIf (LArray_GP(1) = "auto" Or LArray_GP(1) = "fan4") AndAlso LArray_GP(0) = "fan" Then
+        ElseIf (LArray_GP(1) = "auto" OrElse LArray_GP(1) = "fan4") AndAlso LArray_GP(0) = "fan" Then
             GrabPara_FAN = "003F0955"
-        ElseIf (LArray_GP(1) = "eco" Or LArray_GP(1) = "fan5") AndAlso LArray_GP(0) = "fan" Then
+        ElseIf (LArray_GP(1) = "eco" OrElse LArray_GP(1) = "fan5") AndAlso LArray_GP(0) = "fan" Then
             GrabPara_FAN = "003F0595"
-        ElseIf (LArray_GP(1) = "off" Or LArray_GP(1) = "fan6") AndAlso LArray_GP(0) = "fan" Then
+        ElseIf (LArray_GP(1) = "off" OrElse LArray_GP(1) = "fan6") AndAlso LArray_GP(0) = "fan" Then
             GrabPara_FAN = "003F0559"
         Else
             GrabPara_FAN = "00000000"
         End If
     End Function
 
-    Private Function GrabPara_Display(ByVal inputString As String, Optional lengthByte As Integer = 4) As String
+    Private Function GrabPara_Display(inputString As String, Optional lengthByte As Integer = 4) As String
         Dim LArray_GP() As String, thischar As String, nextchar As String
         LArray_GP = Strings.Split(Strings.Replace(inputString, " ", ""), "=")
 
@@ -1907,7 +1941,7 @@ Public Class XCX0
         End If
     End Function
 
-    Private Function GrabPara_Clock(ByVal inputString As String) As String 'added from ver 5.2 for new data type $clock
+    Private Function GrabPara_Clock(inputString As String) As String 'added from ver 5.2 for new data type $clock
         Dim LArray_GP() As String, YY As Integer, MM As Integer, DD As Integer, h As Integer, m As Integer, s As Integer
         Dim DArray() As String, TArray() As String, BinClock As String, ADate As Boolean
         YY = 0 : MM = 0 : DD = 0 : h = 0 : m = 0 : s = 0 : ADate = True
@@ -1944,7 +1978,7 @@ Public Class XCX0
     End Function
 
 
-    Function Grab_name(ByVal inputString As String) As String
+    Function Grab_name(inputString As String) As String
         Dim LArray_v1() As String, i As Integer
         LArray_v1 = Strings.Split(Strings.Replace(Strings.Replace(inputString, "#", "$"), " ", ""), "$")
 

@@ -7,7 +7,7 @@ Public Class XCX3
     Dim X0 As XCX0
 
     Sub XCODE_Core3(ByRef thisWorkBook As Excel.Workbook, ByRef thisxlWorkFunc As Excel.WorksheetFunction, ByRef thisRCUList As List(Of String),
-                    ByRef ErrorWarnLog As String(), ByVal unAttended As Boolean, ByRef IPDictionary As Dictionary(Of String, String))
+                    ByRef ErrorWarnLog As String(), unAttended As Boolean, ByRef IPDictionary As Dictionary(Of String, String))
 
         'initiate if there are more than 1 rcu in the memmap
         If thisRCUList.Count > 1 Then
@@ -108,7 +108,7 @@ Public Class XCX3
     End Sub
 
     ' other rcu
-    Function getOtherRCU(ByVal inputString As String, ByRef thisRCUList As List(Of String)) As String
+    Function getOtherRCU(inputString As String, ByRef thisRCUList As List(Of String)) As String
         Dim LArray_rcu() As String, tempS As String, k As Integer
 
         LArray_rcu = Strings.Split(inputString, " ")
@@ -132,7 +132,7 @@ Public Class XCX3
     End Function
 
     'ip definition
-    Private Function isAnIPdefinition(ByVal inputString As String, ByVal otherRCU As String, ByVal thisRCU As String, ByRef ErrorWarnLog As String()) As Boolean
+    Private Function isAnIPdefinition(inputString As String, otherRCU As String, thisRCU As String, ByRef ErrorWarnLog As String()) As Boolean
         Dim otherRCUIP As String
         otherRCUIP = X0.Grab_variant(inputString, "ip")
         isAnIPdefinition = False

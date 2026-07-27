@@ -7,3 +7,14 @@ C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Termi
 C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.exe
 C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.xml
 C:\Intel\Visual Studio 2010\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.pdb
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\bin\Debug\XC-Terminal.exe
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\bin\Debug\XC-Terminal.pdb
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\bin\Debug\XC-Terminal.xml
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.vbproj.AssemblyReference.cache
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.vbproj.ResolveComReference.cache
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC_Terminal.Resources.resources
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.vbproj.GenerateResource.cache
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.vbproj.CoreCompileInputs.cache
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.exe
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.xml
+C:\Intel\Visual Studio 2022\XCODE-Terminal\XCODE-Terminal\obj\x86\Debug\XC-Terminal.pdb
