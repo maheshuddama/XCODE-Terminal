@@ -2,24 +2,27 @@
 
 Public Class XCX5
 
-    Function set_C_Scheme_2(thisConfigLine As String) As Integer
+    Function Set_C_Scheme_2(thisConfigLine As String) As Integer
         Dim XCODEConfig As String, XConfigArr() As String
-        set_C_Scheme_2 = 0
-        XCODEConfig = Strings.LCase(Strings.Trim(thisConfigLine))
-        If Strings.InStr(XCODEConfig, "]") > 0 AndAlso Strings.InStr(XCODEConfig, "[") > 0 Then
+
+
+        XCODEConfig = thisConfigLine.Trim().ToLower()
+        If XCODEConfig.Contains("]") AndAlso XCODEConfig.Contains("[") Then
             XCODEConfig = Strings.Mid(XCODEConfig, Strings.InStr(XCODEConfig, "[") + 1, Strings.InStr(XCODEConfig, "]") - Strings.InStr(XCODEConfig, "[") - 1)
-            XConfigArr = Strings.Split(XCODEConfig, ",")
-            If UBound(XConfigArr) > 0 Then
+            XConfigArr = XCODEConfig.Split(","c)
+            If XConfigArr.Length > 1 Then
                 If XConfigArr(1) = "1" Then
-                    set_C_Scheme_2 = 1
+                    Return 1
                 ElseIf XConfigArr(1) = "2" Then
-                    set_C_Scheme_2 = 2
+                    Return 2
                 End If
             End If
         End If
+
+        Return 0
     End Function
 
-    Sub keyword_version(CC As Integer, ByRef inputRng As Excel.Range)
+    Sub Keyword_version(CC As Integer, ByRef inputRng As Excel.Range)
         C_func_mains(CC, inputRng, 1, 7)
         C_func_hides(CC, inputRng, 8, Strings.Len(inputRng.Text))
     End Sub

@@ -9,9 +9,9 @@ Module XT1
     Sub Main(args As String())
         Dim Input As String
         Dim xlPath = My.Computer.FileSystem.CurrentDirectory
-        unAttended = False : Compiling = False
+        unAttended = True : Compiling = False
         X0 = New XCX0(unAttended)
-        Console.Title = "XC-Terminal Ver(" & X0.getXCVer & "." & X0.getXCbuildVer & ") - (For Preview Only)"
+        Console.Title = "XC-Terminal Ver(" & X0.GetXCVer & "." & X0.GetXCbuildVer & ") - (For Preview Only)"
 
         If Not unAttended Then
             Console.Clear() ' does not work when calling from other applications that listen for console buffer. intended to run manual cmd
@@ -23,7 +23,7 @@ Module XT1
             Console.WriteLine("XC:>" & Input)
         Else
             If unAttended Then
-                Input = "xc " & getFirstMemmap(xlPath) 'for unattended use
+                Input = "xc " & GetFirstMemmap(xlPath) 'for unattended use
             Else
                 Input = "" 'for standard use
             End If
@@ -37,7 +37,7 @@ Module XT1
                 Input = Console.ReadLine()
             End If
 
-            Dim words As String() = Strings.Split(Input, " ")
+            Dim words As String() = Input?.Split(" "c)
 
             If words(0).ToLower = "xc" AndAlso Not Compiling Then
                 ErrorWarnLog = {"", ""}
@@ -45,10 +45,10 @@ Module XT1
                 Dim MemmapFileName As String
 
                 If UBound(words) > 0 AndAlso words(1) <> "" Then
-                    MemmapFileName = X0.get_memmap_name_from_words(words)
+                    MemmapFileName = X0.Get_memmap_name_from_words(words)
 
-                    If X0.isAnExcelFile(MemmapFileName) Then
-                        If X0.isFileExist(xlPath & "\" & MemmapFileName) Then
+                    If X0.IsAnExcelFile(MemmapFileName) Then
+                        If X0.IsFileExist(xlPath & "\" & MemmapFileName) Then
                             If Not X0.IsFileInUse(xlPath & "\" & MemmapFileName) Then
                                 Compiling = True
                                 X1.XCM(MemmapFileName, ErrorWarnLog, unAttended)
@@ -96,7 +96,7 @@ Module XT1
                     Input = "" 'for standard use
                 End If
 
-                releaseObject(X1)
+                ReleaseObject(X1)
             ElseIf words(0).ToLower = "help" Then
                 Console.WriteLine("")
                 Console.WriteLine("XC [Filename]" & vbTab & vbTab & "-Compile the given file.")
@@ -124,7 +124,7 @@ Module XT1
                 End If
 
             ElseIf words(0).ToLower = "version" Then
-                Console.WriteLine("My Version is XC-Terminal (" & X0.getXCVer & "." & X0.getXCbuildVer & ")")
+                Console.WriteLine("My Version is XC-Terminal (" & X0.GetXCVer & "." & X0.GetXCbuildVer & ")")
                 Console.WriteLine("")
 
                 If unAttended Then
@@ -163,13 +163,13 @@ Module XT1
     End Sub
 
     ' find memmap
-    Private Function getFirstMemmap(thisPath As String) As String
+    Private Function GetFirstMemmap(thisPath As String) As String
         Dim thisFileName As String
-        getFirstMemmap = ""
+        GetFirstMemmap = ""
         For Each foundfile As String In My.Computer.FileSystem.GetFiles(thisPath)
-            thisFileName = Strings.Replace(foundfile, thisPath & "\", "")
-            If (Strings.Right(Strings.LCase(thisFileName), 5) = ".xlsx") AndAlso Strings.InStr(Strings.LCase(thisFileName), "rcu mem map.") = 1 Then
-                getFirstMemmap = thisFileName 'output should not force to lcase
+            thisFileName = foundfile.Replace(thisPath & "\", "")
+            If thisFileName.ToLower().EndsWith(".xlsx") AndAlso thisFileName.ToLower().StartsWith("rcu mem map.") Then
+                GetFirstMemmap = thisFileName 'output should not force to lcase
                 Exit Function
             End If
         Next
@@ -177,7 +177,7 @@ Module XT1
 
     'garbage management
 
-    Private Sub releaseObject(ByRef thisObject As Object)
+    Private Sub ReleaseObject(ByRef thisObject As Object)
         Try
             System.Runtime.InteropServices.Marshal.ReleaseComObject(thisObject)
             thisObject = Nothing

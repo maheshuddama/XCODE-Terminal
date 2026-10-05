@@ -3,7 +3,6 @@
 Public Class XCX1
     Dim xlApp As Excel.Application
     Dim xlWorkBook As Excel.Workbook
-    Dim xlWorkFunc As Excel.WorksheetFunction
     Dim xlPath As String
     Dim startTime As String, thisUserName As String, eMsg As String
     Dim xlSheetList As New List(Of String)
@@ -25,19 +24,19 @@ Public Class XCX1
             xlApp.ScreenUpdating = False
             xlApp.Calculation = Excel.XlCalculation.xlCalculationManual
 
-            X2.XCODE_Core1_Core2(MemmapName, xlWorkBook, xlWorkFunc, xlSheetList, thisRCUList, ErrorWarnLog, unAttended, RCUNameDictionary, IPDictionary)
+            X2.XCODE_Core1_Core2(MemmapName, xlWorkBook, xlSheetList, thisRCUList, ErrorWarnLog, unAttended, RCUNameDictionary, IPDictionary)
             xlApp.Calculate()
 
-            X3.XCODE_Core3(xlWorkBook, xlWorkFunc, thisRCUList, ErrorWarnLog, unAttended, IPDictionary)
+            X3.XCODE_Core3(xlWorkBook, thisRCUList, ErrorWarnLog, unAttended, IPDictionary)
             xlApp.Calculate()
 
-            X4.XCODE_Finalize(thisUserName, MemmapName, xlWorkBook, xlWorkFunc, xlSheetList, thisRCUList, ErrorWarnLog, unAttended)
+            X4.XCODE_Finalize(thisUserName, MemmapName, xlWorkBook, xlSheetList, thisRCUList, unAttended)
             xlApp.ScreenUpdating = True
             xlApp.Calculation = Excel.XlCalculation.xlCalculationAutomatic
 
-            UpdateReport(thisUserName, X0.getXCVer & "." & X0.getXCbuildVer, MemmapName)
+            UpdateReport(thisUserName, X0.GetXCVer & "." & X0.GetXCbuildVer, MemmapName)
             CreateSolutions(MemmapName, ErrorWarnLog)
-            removeBackups()
+            RemoveBackups()
             CompleteWorkbook() 'save excel
             CreateErrorWarnReport("XC compiled with error(s)", MemmapName, thisUserName, startTime, ErrorWarnLog, False)
             DumpResources(unAttended)
@@ -61,11 +60,10 @@ Public Class XCX1
         Try
             xlWorkBook = xlApp.Workbooks.Open(xlPath & "\" & MemmapName)
         Catch ex As Exception
-            ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), ex.Message)
+            ErrorWarnLog(0) = X0.AddErrorOrWarn(ErrorWarnLog(0), ex.Message)
             Exit Function
         End Try
 
-        xlWorkFunc = xlApp.WorksheetFunction
         thisUserName = xlApp.UserName
 
         Populate_Sheet_List()
@@ -79,7 +77,7 @@ Public Class XCX1
                 'there was some errors, its included in the error report
             End If
         Else
-            ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "One or more sheets does not exist in the Mem map. A valid Mem map should be having at least one set of sheets of 'Device','XCODE','Program','Settings','CustomVar' or their integer elevated name such as 'Device1' etc. Carefully check in the Mem map if these sheet names having an extra space charactor before or end to the name.")
+            ErrorWarnLog(0) = X0.AddErrorOrWarn(ErrorWarnLog(0), "One or more sheets does not exist in the Mem map. A valid Mem map should be having at least one set of sheets of 'Device','XCODE','Program','Settings','CustomVar' or their integer elevated name such as 'Device1' etc. Carefully check in the Mem map if these sheet names having an extra space charactor before or end to the name.")
         End If
     End Function
 
@@ -91,11 +89,11 @@ Public Class XCX1
 
     Private Sub CreateErrorWarnReport(header As String, MemmapName As String, thisUser As String, thisStartTime As String, ByRef ErrorWarnLog As String(), Optional Critical As Boolean = False)
 
-        If Strings.Len(ErrorWarnLog(0)) > 5 OrElse Strings.Len(ErrorWarnLog(1)) > 5 Then
+        If ErrorWarnLog(0).Length > 5 OrElse ErrorWarnLog(1).Length > 5 Then
             'there's some error or warning to report.
             Dim fileh As System.IO.StreamWriter
             Dim errFile As String, endTime As String
-            endTime = X0.getTimeStamp
+            endTime = X0.GetTimeStamp
             errFile = "Error Report - XC - " & MemmapName & " - [" & endTime & "].txt"
 
             fileh = My.Computer.FileSystem.OpenTextFileWriter(xlPath & "\" & errFile, False)
@@ -103,15 +101,15 @@ Public Class XCX1
             With fileh
                 .WriteLine(header & vbNewLine)
                 .WriteLine("Project" & vbTab & vbTab & ": " & MemmapName)
-                .WriteLine("Start time" & vbTab & ": " & X0.expandTimeStamp(startTime))
-                .WriteLine("End time" & vbTab & ": " & X0.expandTimeStamp(endTime))
-                .WriteLine("Compiler" & vbTab & ": " & "XC-Terminal version " & X0.getXCVer & "." & X0.getXCbuildVer)
+                .WriteLine("Start time" & vbTab & ": " & X0.ExpandTimeStamp(startTime))
+                .WriteLine("End time" & vbTab & ": " & X0.ExpandTimeStamp(endTime))
+                .WriteLine("Compiler" & vbTab & ": " & "XC-Terminal version " & X0.GetXCVer & "." & X0.GetXCbuildVer)
                 .WriteLine("User" & vbTab & vbTab & ": " & thisUser & vbNewLine & vbNewLine)
-                If Strings.Len(ErrorWarnLog(0)) > 5 Then
+                If ErrorWarnLog(0).Length > 5 Then
                     .WriteLine("====================[Error Log]====================")
                     .WriteLine(ErrorWarnLog(0) & vbNewLine)
                 End If
-                If Strings.Len(ErrorWarnLog(1)) > 5 Then
+                If ErrorWarnLog(1).Length > 5 Then
                     .WriteLine("====================[Warning Log]====================")
                     .WriteLine(ErrorWarnLog(1))
                 End If
@@ -131,7 +129,7 @@ Public Class XCX1
                 eMsg = "[Error]"
             End If
 
-            releaseObject(fileh)
+            ReleaseObject(fileh)
         End If
 
     End Sub
@@ -147,7 +145,7 @@ Public Class XCX1
         MemmapName = X0.URLEncode(MemmapName)
         thisPath = X0.URLEncode(xlPath)
 
-        If X0.isSheetExist_From_List(xlSheetList, "ReportXlog") Then
+        If X0.IsSheetExist_From_List(xlSheetList, "ReportXlog") Then
             xlWorkSheet = xlWorkBook.Sheets("ReportXlog")
             xlWorkSheet.Range("A:Z").ClearContents()
         Else
@@ -156,7 +154,7 @@ Public Class XCX1
             xlSheetList.Add("ReportXlog")
         End If
 
-        XLogQuery = X0.getLogAuth
+        XLogQuery = X0.GetLogAuth
         XLogQuery = XLogQuery & "?entry.84145384=" & thisUser & "&entry.1362894441=" & thisVer & "&entry.1003842767=" & MemmapName & "&entry.696172307=" & thisPath & "&fvv=1&partialResponse=%5Bnull%2Cnull%2C%228790538719799163109%22%5D&pageHistory=0&fbzx=8790538719799163109"
 
         Try
@@ -176,7 +174,7 @@ Public Class XCX1
             xlApp.DisplayAlerts = False
             xlWorkBook.Sheets("ReportXlog").delete()
             xlSheetList.Remove("ReportXlog")
-            releaseObject(xlWorkSheet) 'locally released 
+            ReleaseObject(xlWorkSheet) 'locally released 
             xlApp.DisplayAlerts = True
         End Try
 
@@ -188,7 +186,7 @@ Public Class XCX1
 
         X0.ConsoleMsg("XC Progress:> Initiate Compiling...")
 
-        If X0.isSheetExist_From_List(xlSheetList, "Compatible") Then
+        If X0.IsSheetExist_From_List(xlSheetList, "Compatible") Then
             xlWorkSheet = xlWorkBook.Sheets("Compatible")
             xlWorkSheet.Range("A:Z").ClearContents()
         Else
@@ -199,7 +197,7 @@ Public Class XCX1
 
 
 
-        thisCon = X0.getOpenAuth
+        thisCon = X0.GetOpenAuth
 
         Try
             With xlWorkSheet.QueryTables.Add(Connection:=thisCon, Destination:=xlWorkSheet.Range("$A$1"))
@@ -228,30 +226,30 @@ Public Class XCX1
             End With
 
             For Each ce In xlWorkSheet.Range(xlWorkSheet.Range("B1"), xlWorkSheet.Range("B1").End(Excel.XlDirection.xlDown))
-                If ce.Text = "ver" & X0.getXCVer Then
+                If ce.Text = "ver" & X0.GetXCVer Then
                     If ce.Offset(0, 1).Text = "TRUE" Then
                         CheckCompatibility = True
                     Else
-                        ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "Incompatible version. " & ce.Offset(0, 2).Text)
+                        ErrorWarnLog(0) = X0.AddErrorOrWarn(ErrorWarnLog(0), "Incompatible version. " & ce.Offset(0, 2).Text)
                     End If
                 End If
             Next ce
 
         Catch ex As Exception
-            ErrorWarnLog(0) = X0.addErrorOrWarn(ErrorWarnLog(0), "Failed to initiate Memmap.")
+            ErrorWarnLog(0) = X0.AddErrorOrWarn(ErrorWarnLog(0), "Failed to initiate Memmap.")
         Finally
             xlWorkSheet.Range("A:Z").ClearContents()
             xlApp.DisplayAlerts = False
             xlWorkBook.Sheets("Compatible").delete()
             xlSheetList.Remove("Compatible")
-            releaseObject(xlWorkSheet)
+            ReleaseObject(xlWorkSheet)
             xlApp.DisplayAlerts = True
         End Try
 
     End Function
 
 
-    Private Sub removeBackups()
+    Private Sub RemoveBackups()
         Dim xlWorkSheet As Excel.Worksheet = Nothing
         'remove backup
         xlApp.DisplayAlerts = False
@@ -264,7 +262,7 @@ Public Class XCX1
         xlWorkSheet = xlWorkBook.Sheets("XCODE" & thisRCUList(0))
         xlWorkSheet.Select()
 
-        releaseObject(xlWorkSheet)
+        ReleaseObject(xlWorkSheet)
         xlApp.DisplayAlerts = True
     End Sub
 
@@ -279,23 +277,22 @@ Public Class XCX1
         Catch ex As Exception
             ' no exceptions
         Finally
-            releaseObject(xlWorkBook)
-            releaseObject(xlWorkFunc)
+            ReleaseObject(xlWorkBook)
 
-            releaseObject(X0)
-            releaseObject(X2)
-            releaseObject(X3)
-            releaseObject(X4)
+            ReleaseObject(X0)
+            ReleaseObject(X2)
+            ReleaseObject(X3)
+            ReleaseObject(X4)
 
             If Not IsNothing(xlApp) Then
                 xlApp.Quit()
             End If
 
-            releaseObject(xlApp)
+            ReleaseObject(xlApp)
 
         End Try
 
-        If unAttended AndAlso Strings.Len(eMsg) > 0 Then
+        If unAttended AndAlso eMsg.Length > 0 Then
             Console.WriteLine()
             Console.Write("XC:>" & eMsg)
             'MsgBox(eMsg)
@@ -319,7 +316,7 @@ Public Class XCX1
             rfullcount = thisRCUList.Count
 
             For Each thisRCU As String In thisRCUList
-                Defined_Name = getDefinedName(thisRCU)
+                Defined_Name = GetDefinedName(thisRCU)
 
                 Notification = Notification & " '" & DeviceXF(MemmapName, thisRCU, Defined_Name) & "'"
                 Notification = Notification & " '" & ProgramXF(MemmapName, thisRCU, Defined_Name) & "'"
@@ -331,7 +328,7 @@ Public Class XCX1
             X0.ConsoleMsg("XC:> Solution Files " & Notification)
             eMsg = "[Result]"
         Else
-            ErrorWarnLog(1) = X0.addErrorOrWarn(ErrorWarnLog(1), "[XCODE | Printer | " & xlPath & "][Destination path could not access]")
+            ErrorWarnLog(1) = X0.AddErrorOrWarn(ErrorWarnLog(1), "[XCODE | Printer | " & xlPath & "][Destination path could not access]")
             eMsg = "[Error]"
         End If
     End Sub
@@ -366,7 +363,7 @@ Public Class XCX1
 
     'solution write
 
-    Private Function getDefinedName(thisRCU As String) As String
+    Private Function GetDefinedName(thisRCU As String) As String
         'Dim xlWorkSheet As Excel.Worksheet
         'Dim ce As Excel.Range, ThisTempLine As String
         'getDefinedName = "NULL"
@@ -391,17 +388,17 @@ Public Class XCX1
 
         'releaseObject(xlWorkSheet)
         If RCUNameDictionary.ContainsKey("XCODE" & thisRCU) Then
-            getDefinedName = RCUNameDictionary("XCODE" & thisRCU)
-        Else
-            getDefinedName = "NULL"
+            Return RCUNameDictionary("XCODE" & thisRCU)
         End If
+
+        Return "NULL"
     End Function
 
     Private Function DeviceXF(MemmapName As String, thisRCU As String, Def_Name As String) As String
         Dim xlWorkSheet As Excel.Worksheet
         Dim ce As Excel.Range, RCUName As String, thisName As String
         Dim withCBS As Boolean, CBSline As String, CBSint As Integer
-        Dim fileh As System.IO.StreamWriter
+        Dim fileh As IO.StreamWriter
 
         withCBS = False
 
@@ -428,9 +425,9 @@ Public Class XCX1
 
                     If Strings.LCase(Strings.Trim(ce.Offset(0, 1).Text)) = "0e" AndAlso (Not withCBS) Then
                         withCBS = True
-                        CBSline = Strings.Replace(Strings.Trim(ce.Offset(0, 4).Text), " ", "")
+                        CBSline = Strings.Replace(Strings.Trim(ce.Offset(0, 4).Text), " "c, "")
                         CBSline = Strings.Right(CBSline, 2) & Strings.Left(CBSline, 2)
-                        CBSint = xlWorkFunc.Hex2Dec(CBSline) + 4
+                        CBSint = Convert.ToInt32(CBSline, 16) + 4
                     End If
                 End If
             Next ce
@@ -457,8 +454,8 @@ Public Class XCX1
             .Close()
         End With
 
-        releaseObject(fileh)
-        releaseObject(xlWorkSheet)
+        ReleaseObject(fileh)
+        ReleaseObject(xlWorkSheet)
 
         DeviceXF = "Devices." & thisName & ".hex"
     End Function
@@ -466,7 +463,7 @@ Public Class XCX1
     Private Function ProgramXF(MemmapName As String, thisRCU As String, Def_Name As String) As String
         Dim xlWorkSheet As Excel.Worksheet
         Dim ce As Excel.Range, RCUName As String, thisName As String
-        Dim fileh As System.IO.StreamWriter
+        Dim fileh As IO.StreamWriter
 
         If thisRCU = "" Then
             RCUName = ""
@@ -475,7 +472,7 @@ Public Class XCX1
         End If
 
         If Def_Name = "NULL" Then
-            thisName = X0.getsufixname(MemmapName) & RCUName
+            thisName = X0.Getsufixname(MemmapName) & RCUName
         Else
             thisName = Def_Name
         End If
@@ -493,8 +490,8 @@ Public Class XCX1
         End With
 
 
-        releaseObject(fileh)
-        releaseObject(xlWorkSheet)
+        ReleaseObject(fileh)
+        ReleaseObject(xlWorkSheet)
 
         ProgramXF = "Program." & thisName & ".hex"
     End Function
@@ -502,7 +499,7 @@ Public Class XCX1
     Private Function ParamsXF(MemmapName As String, thisRCU As String, Def_Name As String) As String
         Dim xlWorkSheet As Excel.Worksheet
         Dim ce As Excel.Range, RCUName As String, thisName As String
-        Dim fileh As System.IO.StreamWriter
+        Dim fileh As IO.StreamWriter
 
         If thisRCU = "" Then
             RCUName = ""
@@ -511,7 +508,7 @@ Public Class XCX1
         End If
 
         If Def_Name = "NULL" Then
-            thisName = X0.getsufixname(MemmapName) & RCUName
+            thisName = X0.Getsufixname(MemmapName) & RCUName
         Else
             thisName = Def_Name
         End If
@@ -528,17 +525,17 @@ Public Class XCX1
             .Close()
         End With
 
-        releaseObject(fileh)
-        releaseObject(xlWorkSheet)
+        ReleaseObject(fileh)
+        ReleaseObject(xlWorkSheet)
 
         ParamsXF = "Params." & thisName & ".hex"
     End Function
 
     'garbage management
 
-    Private Sub releaseObject(ByRef thisObject As Object)
+    Private Sub ReleaseObject(ByRef thisObject As Object)
         Try
-            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(thisObject)
+            Runtime.InteropServices.Marshal.FinalReleaseComObject(thisObject)
             thisObject = Nothing
         Catch ex As Exception
             thisObject = Nothing
